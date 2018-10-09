@@ -1,21 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-//import { Provider } from 'react-redux'
-//import store from './store'
+import { Provider } from 'react-redux'
+import store from './store'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
+import { LocaleProvider } from 'antd'
+import zh_CN from 'antd/lib/locale-provider/zh_CN'
+import 'moment/locale/zh-cn'
+import './main.scss'
 
 ReactDOM.render(
-    /*
     <BrowserRouter>
         <Provider store={store}>
-            <App />
+            <LocaleProvider locale={zh_CN}>
+                <App />
+            </LocaleProvider>
         </Provider>
-    </BrowserRouter>,
-    */
-    <BrowserRouter>
-        <App />
     </BrowserRouter>,
     document.getElementById('root')
 )

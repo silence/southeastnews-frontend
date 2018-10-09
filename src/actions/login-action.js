@@ -1,5 +1,5 @@
 import { client } from './'
-const url = '/'
+const url = 'http://localhost:3000'
 
 export function getUserInfo() {
     return dispatch => {

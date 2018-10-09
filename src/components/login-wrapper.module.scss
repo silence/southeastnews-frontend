@@ -1,0 +1,25 @@
+.login-wrapper {
+    height: -webkit-fill-available;
+    background: url(../images/login.png) no-repeat;
+    background-size: cover;
+    .wrapper {
+        width: 500px;
+        height: inherit;
+        float: right;
+        background: #ffffff33;
+        filter: blur(1.5px);
+    }
+    .login-form {
+        width: 300px;
+        position: absolute;
+        right: 100px;
+        transform: translateY(-50%);
+        top: 50%;
+        form {
+            margin-top: 24px;
+        }
+        button {
+            width: 100%;
+        }
+    }
+}
