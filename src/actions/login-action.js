@@ -1,11 +1,11 @@
 import { client } from './'
-const url = 'http://localhost:3000'
+const url = '/southeast_news_backend/login'
 
 export function getUserInfo() {
     return dispatch => {
         return dispatch({
             type: 'GET_USER_INFO',
-            payload: client.get(`${url}/userInfo`)
+            payload: client.get(`${url}/userInfo.php`)
         })
     }
 }
@@ -14,7 +14,7 @@ export function login(userData) {
     return dispatch => {
         return dispatch({
             type: 'LOGIN',
-            payload: client.post(url, userData)
+            payload: client.post(`${url}/login.php`, userData)
         })
     }
 }

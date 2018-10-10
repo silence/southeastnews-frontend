@@ -1,4 +1,4 @@
-import { Form, Icon, Input, Button, Checkbox, Alert } from 'antd'
+import { Form, Icon, Input, Button, Alert } from 'antd'
 import React, { Component } from 'react'
 const FormItem = Form.Item
 
@@ -23,7 +23,7 @@ class NormalLoginForm extends Component {
                 {alert}
                 <Form onSubmit={this.handleSubmit} className="login-form">
                     <FormItem>
-                        {getFieldDecorator('userName', {
+                        {getFieldDecorator('username', {
                             rules: [
                                 { required: true, message: '请输入你的用户名!' },
                                 { max: 10, message: '不能超过10个字符' }
