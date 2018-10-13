@@ -5,7 +5,8 @@ import { getUserInfo } from './actions/login-action'
 import { withRouter } from 'react-router-dom'
 import { Spin } from 'antd'
 import LoginWrapperPage from './pages/login-wrapper-page'
-import SearchWrapper from './components/search-wrapper'
+import SearchWrapperPage from './pages/search-wrapper-page'
+import AdminWrapperPage from './pages/admin-wrapper-page'
 
 class App extends Component {
     componentDidMount() {
@@ -29,22 +30,20 @@ class App extends Component {
             return (
                 <>
                     {this.props.isLogin
-                        ? path === '/xadmin' || path === '/search'
+                        ? path === '/admin' || path === '/search'
                             ? null
                             : this.props.history.push('/search')
                         : path === '/login'
                             ? null
                             : this.props.history.push('/login')}
                     <Route path="/login" component={LoginWrapperPage} />
-                    <Route path="/search" component={SearchWrapper} />
-                    <Route path="/xadmin" component={AdminPage} />
+                    <Route path="/search" component={SearchWrapperPage} />
+                    <Route path="/admin" component={AdminWrapperPage} />
                 </>
             )
         }
     }
 }
-
-const AdminPage = () => <h1>admin page</h1>
 
 function mapStateToProps(state) {
     return {

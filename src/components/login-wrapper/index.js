@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import WrappedNormalLoginForm from './login-form'
-import styles from './login-wrapper.module.scss'
+import styles from './index.module.scss'
 
 class LoginWrapper extends Component {
     render() {
