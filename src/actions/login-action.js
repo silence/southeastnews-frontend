@@ -18,3 +18,12 @@ export function login(userData) {
         })
     }
 }
+
+export function logout() {
+    return dispatch => {
+        return dispatch({
+            type: 'LOGOUT',
+            payload: client.get(`${url}/logout.php`)
+        })
+    }
+}

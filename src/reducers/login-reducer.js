@@ -38,6 +38,11 @@ export default (state = defaultState, action = {}) => {
                 errorMessage: action.payload.response.data.errormessage
             }
         }
+        case 'LOGOUT_FULFILLED': {
+            return {
+                ...state
+            }
+        }
         default:
             return state
     }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import SearchWrapper from '../components/search-wrapper'
 import { withRouter } from 'react-router-dom'
-import { getUserInfo } from '../actions/login-action'
+import { getUserInfo, logout } from '../actions/login-action'
 
 class SearchWrapperPage extends Component {
     render() {
@@ -13,6 +13,7 @@ class SearchWrapperPage extends Component {
                     isAdmin={this.props.isAdmin}
                     getUserInfo={this.props.getUserInfo}
                     history={this.props.history}
+                    logout={this.props.logout}
                 />
             </>
         )
@@ -28,6 +29,6 @@ function mapStateToProps(state) {
 export default withRouter(
     connect(
         mapStateToProps,
-        { getUserInfo }
+        { getUserInfo, logout }
     )(SearchWrapperPage)
 )

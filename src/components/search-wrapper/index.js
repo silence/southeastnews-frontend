@@ -12,6 +12,11 @@ class SearchWrapper extends Component {
             this.props.getUserInfo()
             this.props.history.push('/admin')
         }
+        if (e.key === 'logout') {
+            this.props.logout()
+            this.props.getUserInfo()
+            this.props.history.push('/login')
+        }
     }
     render() {
         const admin = this.props.isAdmin ? (
@@ -20,10 +25,10 @@ class SearchWrapper extends Component {
             </Menu.Item>
         ) : null
         return (
-            <Layout className="layout">
+            <Layout className={styles.layout}>
                 <Header style={{ background: '#f0f2f5' }}>
                     <Menu onClick={this.handleClick} mode="horizontal">
-                        <Menu.Item key="lougout" className={styles.floatRight}>
+                        <Menu.Item key="logout" className={styles.floatRight}>
                             <Icon type="logout" theme="outlined" /> 登出
                         </Menu.Item>
                         {admin}
