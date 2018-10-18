@@ -1,7 +1,10 @@
-.floatRight {
-    float: right;
-}
-
 .layout {
     height: -webkit-fill-available;
+    .nav-header {
+        max-width: 1200px;
+        margin: auto;
+        .floatRight {
+            float: right;
+        }
+    }
 }

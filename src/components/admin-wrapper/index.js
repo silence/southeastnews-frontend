@@ -1,234 +1,185 @@
 import React, { Component } from 'react'
-import { Table, Input, Button, Popconfirm, Form } from 'antd'
+import { Table, Tag, Button, Divider, Modal, Form, Icon, Input, Radio, Popconfirm } from 'antd'
 import styles from './index.module.scss'
 
+const RadioGroup = Radio.Group
 const FormItem = Form.Item
-const EditableContext = React.createContext()
 
-const EditableRow = ({ form, index, ...props }) => (
-    <EditableContext.Provider value={form}>
-        <tr {...props} />
-    </EditableContext.Provider>
+const AdminWrapper = Form.create()(
+    class extends Component {
+        render() {
+            const { visible, onCancel, onSubmit, form } = this.props
+            const { getFieldDecorator } = form
+
+            return (
+                <Modal
+                    title="添加用户"
+                    centered
+                    visible={visible}
+                    okText="提交"
+                    onOk={onSubmit}
+                    onCancel={onCancel}
+                >
+                    <Form layout="vertical">
+                        <FormItem label="用户名">
+                            {getFieldDecorator('username', {
+                                rules: [
+                                    { required: true, message: '请输入用户名!' },
+                                    { max: 10, message: '不能超过10个字符' }
+                                ]
+                            })(
+                                <Input
+                                    prefix={
+                                        <Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+                                    }
+                                />
+                            )}
+                        </FormItem>
+                        <FormItem label="密码">
+                            {getFieldDecorator('password', {
+                                rules: [
+                                    { required: true, message: '请输入密码!' },
+                                    { max: 16, message: '不能超过16个字符' }
+                                ]
+                            })(
+                                <Input
+                                    prefix={
+                                        <Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />
+                                    }
+                                    type="password"
+                                />
+                            )}
+                        </FormItem>
+                        <FormItem
+                            label="权限设置"
+                            labelCol={{ span: 8, offset: 0 }}
+                            wrapperCol={{ span: 12 }}
+                        >
+                            {getFieldDecorator('isadmin', { initialValue: '0' })(
+                                <RadioGroup>
+                                    <Radio value="1">管理员</Radio>
+                                    <Radio value="0">普通用户</Radio>
+                                </RadioGroup>
+                            )}
+                        </FormItem>
+                    </Form>
+                </Modal>
+            )
+        }
+    }
 )
 
-const EditableFormRow = Form.create()(EditableRow)
-
-class EditableCell extends Component {
-    state = {
-        editing: false
-    }
-
+class AdminWrapperPage extends Component {
     componentDidMount() {
-        if (this.props.editable) {
-            document.addEventListener('click', this.handleClickOutside, true)
-        }
+        this.props.getUserList()
     }
 
-    componentWillUnmount() {
-        if (this.props.editable) {
-            document.removeEventListener('click', this.handleClickOutside, true)
-        }
+    state = {
+        visible: true
     }
 
-    toggleEdit = () => {
-        const editing = !this.state.editing
-        this.setState({ editing }, () => {
-            if (editing) {
-                this.input.focus()
-            }
-        })
+    showModal = () => {
+        this.setState({ visible: true })
     }
 
-    handleClickOutside = e => {
-        const { editing } = this.state
-        if (editing && this.cell !== e.target && !this.cell.contains(e.target)) {
-            this.save()
-        }
+    handleCancel = () => {
+        this.setState({ visible: false })
     }
 
-    save = () => {
-        const { record, handleSave } = this.props
-        this.form.validateFields((error, values) => {
-            if (error) {
+    handleSubmit = () => {
+        const form = this.formRef.props.form
+        form.validateFields((err, values) => {
+            if (err) {
                 return
             }
-            this.toggleEdit()
-            handleSave({ ...record, ...values })
+            console.log('Received values of form: ', values)
+            form.resetFields()
+            this.setState({ visible: false })
         })
+    }
+
+    saveFormRef = formRef => {
+        this.formRef = formRef
     }
 
     render() {
-        const { editing } = this.state
-        const { editable, dataIndex, title, record, index, handleSave, ...restProps } = this.props
-        return (
-            <td ref={node => (this.cell = node)} {...restProps}>
-                {editable ? (
-                    <EditableContext.Consumer>
-                        {form => {
-                            this.form = form
-                            return editing ? (
-                                <FormItem style={{ margin: 0 }}>
-                                    {form.getFieldDecorator(dataIndex, {
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: `${title} is required.`
-                                            }
-                                        ],
-                                        initialValue: record[dataIndex]
-                                    })(
-                                        <Input
-                                            ref={node => (this.input = node)}
-                                            onPressEnter={this.save}
-                                        />
-                                    )}
-                                </FormItem>
-                            ) : (
-                                <div
-                                    className="editable-cell-value-wrap"
-                                    style={{ paddingRight: 24 }}
-                                    onClick={this.toggleEdit}
-                                >
-                                    {restProps.children}
-                                </div>
-                            )
-                        }}
-                    </EditableContext.Consumer>
-                ) : (
-                    restProps.children
-                )}
-            </td>
-        )
-    }
-}
-
-class EditableTable extends Component {
-    constructor(props) {
-        super(props)
-        this.columns = [
+        const columns = [
             {
-                title: 'name',
-                dataIndex: 'name',
-                width: '30%',
-                editable: true
+                title: 'Id',
+                dataIndex: 'id',
+                key: 'id'
             },
             {
-                title: 'age',
-                dataIndex: 'age'
+                title: '用户名',
+                dataIndex: 'username',
+                key: 'username'
             },
             {
-                title: 'address',
-                dataIndex: 'address'
+                title: '权限',
+                key: 'isadmin',
+                dataIndex: 'isadmin',
+                render: isadmin =>
+                    isadmin ? (
+                        <Tag color="cyan" key>
+                            管理员
+                        </Tag>
+                    ) : (
+                        <Tag color="blue" key>
+                            普通用户
+                        </Tag>
+                    )
             },
             {
-                title: 'operation',
-                dataIndex: 'operation',
-                render: (text, record) => {
-                    return this.state.dataSource.length >= 1 ? (
+                title: '操作',
+                key: 'action',
+                render: () => (
+                    <span>
+                        <a>修改密码</a>
+                        <Divider type="vertical" />
                         <Popconfirm
-                            title="Sure to delete?"
-                            onConfirm={() => this.handleDelete(record.key)}
+                            title="确定删除该用户吗?"
+                            onConfirm={this.handleConfirm}
+                            onCancel
                         >
-                            <a href="javascript:;">Delete</a>
+                            <a href="#" style={{ color: 'red' }}>
+                                删除用户
+                            </a>
                         </Popconfirm>
-                    ) : null
-                }
+                    </span>
+                )
             }
         ]
 
-        this.state = {
-            dataSource: [
-                {
-                    key: '0',
-                    name: 'Edward King 0',
-                    age: '32',
-                    address: 'London, Park Lane no. 0'
-                },
-                {
-                    key: '1',
-                    name: 'Edward King 1',
-                    age: '32',
-                    address: 'London, Park Lane no. 1'
-                }
-            ],
-            count: 2
-        }
-    }
-
-    handleDelete = key => {
-        const dataSource = [...this.state.dataSource]
-        this.setState({ dataSource: dataSource.filter(item => item.key !== key) })
-    }
-
-    handleAdd = () => {
-        const { count, dataSource } = this.state
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`
-        }
-        this.setState({
-            dataSource: [...dataSource, newData],
-            count: count + 1
-        })
-    }
-
-    handleSave = row => {
-        const newData = [...this.state.dataSource]
-        const index = newData.findIndex(item => row.key === item.key)
-        const item = newData[index]
-        newData.splice(index, 1, {
-            ...item,
-            ...row
-        })
-        this.setState({ dataSource: newData })
-    }
-
-    render() {
-        const { dataSource } = this.state
-        const components = {
-            body: {
-                row: EditableFormRow,
-                cell: EditableCell
+        const data = [
+            {
+                key: '1',
+                id: '1',
+                username: 'test',
+                isadmin: 1
+            },
+            {
+                key: '2',
+                id: '2',
+                username: 'riochen',
+                isadmin: 0
             }
-        }
-        const columns = this.columns.map(col => {
-            if (!col.editable) {
-                return col
-            }
-            return {
-                ...col,
-                onCell: record => ({
-                    record,
-                    editable: col.editable,
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    handleSave: this.handleSave
-                })
-            }
-        })
+        ]
+
         return (
-            <div>
-                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                    Add a row
+            <>
+                <Button type="primary" onClick={this.showModal}>
+                    添加用户
                 </Button>
-                <Table
-                    components={components}
-                    rowClassName={() => 'editable-row'}
-                    bordered
-                    dataSource={dataSource}
-                    columns={columns}
+                <AdminWrapper
+                    wrappedComponentRef={this.saveFormRef}
+                    visible={this.state.visible}
+                    onCancel={this.handleCancel}
+                    onSubmit={this.handleSubmit}
                 />
-            </div>
+                <Table columns={columns} dataSource={data} />
+            </>
         )
     }
 }
 
-class AdminWrapper extends Component {
-    render() {
-        return <EditableTable />
-    }
-}
-
-export default AdminWrapper
+export default AdminWrapperPage

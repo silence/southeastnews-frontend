@@ -40,7 +40,8 @@ export default (state = defaultState, action = {}) => {
         }
         case 'LOGOUT_FULFILLED': {
             return {
-                ...state
+                ...state,
+                success: 0
             }
         }
         default:

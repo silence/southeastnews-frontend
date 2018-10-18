@@ -26,18 +26,30 @@ class SearchWrapper extends Component {
         ) : null
         return (
             <Layout className={styles.layout}>
-                <Header style={{ background: '#f0f2f5' }}>
-                    <Menu onClick={this.handleClick} mode="horizontal">
-                        <Menu.Item key="logout" className={styles.floatRight}>
-                            <Icon type="logout" theme="outlined" /> 登出
-                        </Menu.Item>
-                        {admin}
-                    </Menu>
+                <Header style={{ background: '#f0f2f5', padding: '0' }}>
+                    <div className={styles['nav-header']}>
+                        <Menu
+                            onClick={this.handleClick}
+                            mode="horizontal"
+                            style={{ lineHeight: '64px' }}
+                        >
+                            <Menu.Item
+                                key="displayLogo"
+                                style={{ 'border-bottom': '0', fontSize: 20, color: '#1890ff' }}
+                            >
+                                东南亚新闻搜索
+                            </Menu.Item>
+                            <Menu.Item key="logout" className={styles.floatRight}>
+                                <Icon type="logout" theme="outlined" /> 登出
+                            </Menu.Item>
+                            {admin}
+                        </Menu>
+                    </div>
                 </Header>
                 <Content style={{ padding: '0 50px' }}>
                     <h1>content</h1>
                 </Content>
-                <Footer style={{ textAlign: 'center' }}>©2018 星辰工作室</Footer>
+                <Footer style={{ textAlign: 'center' }}>©2018 StarStudio</Footer>
             </Layout>
         )
     }
