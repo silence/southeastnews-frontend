@@ -3,7 +3,6 @@ import {
     Table,
     Tag,
     Button,
-    Divider,
     Modal,
     Form,
     Icon,
@@ -115,6 +114,11 @@ class AdminWrapper extends Component {
         })
     }
 
+    handleDeleteConfirm = id => {
+        console.log(id)
+        // this.props.deleteUser(id).then(this.props.getUserList)
+    }
+
     saveFormRef = formRef => {
         this.formRef = formRef
     }
@@ -149,18 +153,16 @@ class AdminWrapper extends Component {
             {
                 title: '操作',
                 key: 'action',
-                render: () => (
+                render: (text, record) => (
                     <span>
-                        <a>修改密码</a>
-                        <Divider type="vertical" />
+                        {/* <a>修改密码</a>
+                        <Divider type="vertical" /> */}
                         <Popconfirm
                             title="确定删除该用户吗?"
-                            onConfirm={this.handleConfirm}
-                            onCancel
+                            onConfirm={() => this.handleDeleteConfirm(record.id)}
+                            onCancel={() => {}}
                         >
-                            <a href="#" style={{ color: 'red' }}>
-                                删除用户
-                            </a>
+                            <a style={{ color: 'red' }}>删除用户</a>
                         </Popconfirm>
                     </span>
                 )
@@ -173,12 +175,6 @@ class AdminWrapper extends Component {
         //         id: '1',
         //         username: 'test',
         //         isadmin: 1
-        //     },
-        //     {
-        //         key: '2',
-        //         id: '2',
-        //         username: 'riochen',
-        //         isadmin: 0
         //     }
         // ]
 
@@ -220,13 +216,13 @@ class AdminWrapper extends Component {
                         <Button type="primary" onClick={this.showModal}>
                             添加用户
                         </Button>
+                        <br />
                         <AdminWrapperForm
                             wrappedComponentRef={this.saveFormRef}
                             visible={this.state.visible}
                             onCancel={this.handleCancel}
                             onSubmit={this.handleSubmit}
                         />
-                        {/* <Table columns={columns} dataSource={data} /> */}
                         {this.props.getUserListLoading ? (
                             <Spin />
                         ) : (
