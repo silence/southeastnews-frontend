@@ -1,11 +1,27 @@
 import React, { Component } from 'react'
-import { Table, Tag, Button, Divider, Modal, Form, Icon, Input, Radio, Popconfirm } from 'antd'
+import {
+    Table,
+    Tag,
+    Button,
+    Divider,
+    Modal,
+    Form,
+    Icon,
+    Input,
+    Radio,
+    Popconfirm,
+    Layout,
+    Menu,
+    Card,
+    Spin
+} from 'antd'
 import styles from './index.module.scss'
 
+const { Header, Content, Footer } = Layout
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
 
-const AdminWrapper = Form.create()(
+const AdminWrapperForm = Form.create()(
     class extends Component {
         render() {
             const { visible, onCancel, onSubmit, form } = this.props
@@ -55,10 +71,10 @@ const AdminWrapper = Form.create()(
                             labelCol={{ span: 8, offset: 0 }}
                             wrapperCol={{ span: 12 }}
                         >
-                            {getFieldDecorator('isadmin', { initialValue: '0' })(
+                            {getFieldDecorator('isadmin', { initialValue: 0 })(
                                 <RadioGroup>
-                                    <Radio value="1">管理员</Radio>
-                                    <Radio value="0">普通用户</Radio>
+                                    <Radio value={1}>管理员</Radio>
+                                    <Radio value={0}>普通用户</Radio>
                                 </RadioGroup>
                             )}
                         </FormItem>
@@ -69,13 +85,13 @@ const AdminWrapper = Form.create()(
     }
 )
 
-class AdminWrapperPage extends Component {
+class AdminWrapper extends Component {
     componentDidMount() {
         this.props.getUserList()
     }
 
     state = {
-        visible: true
+        visible: false
     }
 
     showModal = () => {
@@ -93,6 +109,7 @@ class AdminWrapperPage extends Component {
                 return
             }
             console.log('Received values of form: ', values)
+            this.props.addUser(values).then(this.props.getUserList)
             form.resetFields()
             this.setState({ visible: false })
         })
@@ -150,36 +167,77 @@ class AdminWrapperPage extends Component {
             }
         ]
 
-        const data = [
-            {
-                key: '1',
-                id: '1',
-                username: 'test',
-                isadmin: 1
-            },
-            {
-                key: '2',
-                id: '2',
-                username: 'riochen',
-                isadmin: 0
-            }
-        ]
+        // const data = [
+        //     {
+        //         key: '1',
+        //         id: '1',
+        //         username: 'test',
+        //         isadmin: 1
+        //     },
+        //     {
+        //         key: '2',
+        //         id: '2',
+        //         username: 'riochen',
+        //         isadmin: 0
+        //     }
+        // ]
 
         return (
-            <>
-                <Button type="primary" onClick={this.showModal}>
-                    添加用户
-                </Button>
-                <AdminWrapper
-                    wrappedComponentRef={this.saveFormRef}
-                    visible={this.state.visible}
-                    onCancel={this.handleCancel}
-                    onSubmit={this.handleSubmit}
-                />
-                <Table columns={columns} dataSource={data} />
-            </>
+            <Layout className={styles.layout}>
+                <Header
+                    style={{
+                        padding: '0'
+                    }}
+                >
+                    <div className={styles['nav-header']}>
+                        <Menu
+                            onClick={this.handleNavClick}
+                            mode="horizontal"
+                            style={{ lineHeight: '63px' }}
+                        >
+                            <Menu.Item
+                                key="displayLogo"
+                                style={{
+                                    borderBottom: '0',
+                                    fontSize: 20,
+                                    color: '#1890ff',
+                                    padding: '0'
+                                }}
+                            >
+                                东南亚新闻搜索
+                            </Menu.Item>
+                            <Menu.Item key="logout" className={styles.floatRight}>
+                                <Icon type="logout" theme="outlined" /> 登出
+                            </Menu.Item>
+                            <Menu.Item key="return" className={styles.floatRight}>
+                                <Icon type="rollback" theme="outlined" /> 返回搜索页
+                            </Menu.Item>
+                        </Menu>
+                    </div>
+                </Header>
+                <Content>
+                    <Card bordered={false} title="成员管理">
+                        <Button type="primary" onClick={this.showModal}>
+                            添加用户
+                        </Button>
+                        <AdminWrapperForm
+                            wrappedComponentRef={this.saveFormRef}
+                            visible={this.state.visible}
+                            onCancel={this.handleCancel}
+                            onSubmit={this.handleSubmit}
+                        />
+                        {/* <Table columns={columns} dataSource={data} /> */}
+                        {this.props.getUserListLoading ? (
+                            <Spin />
+                        ) : (
+                            <Table columns={columns} dataSource={this.props.userList} />
+                        )}
+                    </Card>
+                </Content>
+                <Footer style={{ textAlign: 'center' }}>©2018 StarStudio</Footer>
+            </Layout>
         )
     }
 }
 
-export default AdminWrapperPage
+export default AdminWrapper

@@ -25,7 +25,7 @@ class App extends Component {
         console.log(this.props)
         const path = this.props.location.pathname
         if (this.props.getUserInfoLoading) {
-            return <Spin />
+            return <Spin size="large" />
         } else {
             return (
                 <>

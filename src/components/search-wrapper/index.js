@@ -1,5 +1,17 @@
 import React, { Component } from 'react'
-import { Layout, Menu, Icon, Input, Card, Form, Checkbox, DatePicker, Divider } from 'antd'
+import {
+    Layout,
+    Menu,
+    Icon,
+    Input,
+    Card,
+    Form,
+    Checkbox,
+    DatePicker,
+    Divider,
+    List,
+    Tag
+} from 'antd'
 import styles from './index.module.scss'
 import TagSelect from '../TagSelect'
 
@@ -10,9 +22,22 @@ const { Header, Content, Footer } = Layout
 const Search = Input.Search
 const websitesFromServer = ['metrotv', 'sindonews', 'liputan6', 'ripublika']
 const lanOptionsFromServer = [
-    { label: '越南语', value: 'Vietnam' },
-    { label: '印度尼西亚语', value: 'Lndonesia', disabled: true },
+    { label: '越南语', value: 'Vietnam', disabled: true },
+    { label: '印度尼西亚语', value: 'Indonesia' },
     { label: '马来西亚语', value: 'Malaysia', disabled: true }
+]
+
+const listData = [
+    {
+        author: 'Tanti Yulianingsih ',
+        url:
+            'http://global.liputan6.com/read/3071643/kabar-gembira-banyak-lowongan-chef-di-australia',
+        media: 'Liputan6.com, Melbourne ',
+        abstract: 'Australia ternyata melirik juru masak dari Indonesia. Tertarik melamar?',
+        site: 'liputan6',
+        news_title: 'Kabar Gembira, Banyak Lowongan Chef di Australia',
+        public_date: '2017-08-26T00:00:00.000Z'
+    }
 ]
 
 class SearchWrapper extends Component {
@@ -114,7 +139,7 @@ class SearchWrapper extends Component {
                                     <Divider dashed />
                                     <FormItem label="语种选择" {...formLayout}>
                                         {getFieldDecorator('lanSelect', {
-                                            initialValue: ['Vietnam']
+                                            initialValue: ['Indonesia']
                                         })(<CheckboxGroup options={lanOptionsFromServer} />)}
                                     </FormItem>
                                     <Divider dashed />
@@ -123,12 +148,53 @@ class SearchWrapper extends Component {
                                     </FormItem>
                                 </Form>
                             </Card>
+                            <Card bordered={false} style={{ marginTop: '24px' }}>
+                                <List
+                                    itemLayout="vertical"
+                                    size="large"
+                                    pagination={{
+                                        onChange: page => {
+                                            console.log(page)
+                                        },
+                                        pageSize: 10
+                                    }}
+                                    dataSource={listData}
+                                    renderItem={item => (
+                                        <List.Item
+                                            key={item.news_title}
+                                            actions={[
+                                                <span>test1</span>,
+                                                <span>test2</span>,
+                                                <span>test3</span>
+                                            ]}
+                                        >
+                                            <List.Item.Meta
+                                                title={item.news_title}
+                                                description={
+                                                    <span>
+                                                        <Tag>{item.author}</Tag>
+                                                        <Tag>{item.site}</Tag>
+                                                        {/* <Tag>{item.public_data}</Tag> */}
+                                                    </span>
+                                                }
+                                            />
+                                            {item.abstract}
+                                        </List.Item>
+                                    )}
+                                />
+                            </Card>
                         </div>
                     </div>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>©2018 StarStudio</Footer>
             </Layout>
         )
+    }
+}
+
+class SearchResultsList extends Component {
+    render() {
+        return <h1>test</h1>
     }
 }
 

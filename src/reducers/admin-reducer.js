@@ -1,5 +1,6 @@
 const defaultState = {
-    getUserListLoading: 1
+    getUserListLoading: 1,
+    userList: []
 }
 
 export default (state = defaultState, action = {}) => {
@@ -13,10 +14,23 @@ export default (state = defaultState, action = {}) => {
         case 'GET_USER_LIST_FULFILLED': {
             return {
                 ...state,
-                isLogin: action.payload.data.islogin,
-                isAdmin: action.payload.data.isadmin,
-                username: action.payload.data.username,
-                getUserInfoLoading: 0
+                userList: action.payload.data.userlist,
+                getUserListLoading: 0
+            }
+        }
+        case 'ADD_USER_FULFILLED': {
+            return {
+                ...state
+            }
+        }
+        case 'DELETE_USER_FULFILLED': {
+            return {
+                ...state
+            }
+        }
+        case 'CHANGE_PWD_FULFILLED': {
+            return {
+                ...state
             }
         }
 
