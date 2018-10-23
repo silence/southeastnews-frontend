@@ -12,7 +12,8 @@ import {
     Layout,
     Menu,
     Card,
-    Spin
+    Spin,
+    message
 } from 'antd'
 import styles from './index.module.scss'
 
@@ -85,12 +86,24 @@ const AdminWrapperForm = Form.create()(
 )
 
 class AdminWrapper extends Component {
+    state = {
+        visible: false
+    }
     componentDidMount() {
         this.props.getUserList()
     }
 
-    state = {
-        visible: false
+    handleNavClick = e => {
+        e.domEvent.preventDefault()
+        console.log(e)
+        if (e.key === 'return') {
+            this.props.getUserInfo()
+            this.props.history.push('/search')
+        }
+        if (e.key === 'logout') {
+            this.props.logout().then(() => this.props.getUserInfo())
+            this.props.history.push('/login')
+        }
     }
 
     showModal = () => {
@@ -108,7 +121,10 @@ class AdminWrapper extends Component {
                 return
             }
             console.log('Received values of form: ', values)
-            this.props.addUser(values).then(this.props.getUserList)
+            this.props
+                .addUser(values)
+                .then(() => this.props.getUserList())
+                .catch(err => message.error(err.response.data.errormessage))
             form.resetFields()
             this.setState({ visible: false })
         })
@@ -116,7 +132,10 @@ class AdminWrapper extends Component {
 
     handleDeleteConfirm = id => {
         console.log(id)
-        // this.props.deleteUser(id).then(this.props.getUserList)
+        this.props
+            .deleteUser({ userid: id })
+            .then(() => this.props.getUserList())
+            .catch(err => message.error(err.response.data.errormessage))
     }
 
     saveFormRef = formRef => {
@@ -127,7 +146,7 @@ class AdminWrapper extends Component {
         const columns = [
             {
                 title: 'Id',
-                dataIndex: 'id',
+                dataIndex: 'key', // key为连续值,id为数据库唯一值
                 key: 'id'
             },
             {
@@ -226,7 +245,11 @@ class AdminWrapper extends Component {
                         {this.props.getUserListLoading ? (
                             <Spin />
                         ) : (
-                            <Table columns={columns} dataSource={this.props.userList} />
+                            <Table
+                                columns={columns}
+                                dataSource={this.props.userList}
+                                pagination={{ pageSize: 8 }}
+                            />
                         )}
                     </Card>
                 </Content>

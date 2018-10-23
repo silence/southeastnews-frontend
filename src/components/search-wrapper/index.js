@@ -55,8 +55,7 @@ class SearchWrapper extends Component {
             this.props.history.push('/admin')
         }
         if (e.key === 'logout') {
-            this.props.logout()
-            this.props.getUserInfo()
+            this.props.logout().then(() => this.props.getUserInfo())
             this.props.history.push('/login')
         }
     }

@@ -24,8 +24,16 @@ class App extends Component {
     render() {
         console.log(this.props)
         const path = this.props.location.pathname
+
         if (this.props.getUserInfoLoading) {
-            return <Spin size="large" />
+            return (
+                <div className="spin-wrapper">
+                    <Spin
+                        size="large"
+                        style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}
+                    />
+                </div>
+            )
         } else {
             return (
                 <>
