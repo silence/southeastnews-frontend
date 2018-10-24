@@ -16,6 +16,7 @@ import {
 import styles from './index.module.scss'
 import TagSelect from './TagSelect'
 import FlipMove from 'react-flip-move'
+import Pie from './Pie'
 
 const RadioGroup = Radio.Group
 // const CheckboxGroup = Checkbox.Group
@@ -46,7 +47,8 @@ const lanOptionsFromServer = [
 
 class SearchWrapper extends Component {
     state = {
-        expand: false
+        expand: false,
+        activeTabKey: 'tab1'
     }
 
     handleWebsiteCheck = (website, isCheck) => {}
@@ -67,6 +69,11 @@ class SearchWrapper extends Component {
             this.props.logout().then(() => this.props.getUserInfo())
             this.props.history.push('/login')
         }
+    }
+
+    handleTabChange = key => {
+        console.log(key)
+        this.setState({ activeTabKey: key })
     }
 
     handleSubmit = () => {
@@ -103,6 +110,17 @@ class SearchWrapper extends Component {
             labelCol: { span: 2 },
             wrapperCol: { span: 14, offset: 1 }
         }
+        const tabList = [
+            {
+                key: 'tab1',
+                tab: '搜索结果'
+            },
+            {
+                key: 'tab2',
+                tab: '图表展示'
+            }
+        ]
+
         const AdvanceSearch = this.state.expand ? (
             <div className="advanced-search">
                 <Divider dashed />
@@ -129,6 +147,40 @@ class SearchWrapper extends Component {
                 </FormItem>
             </div>
         ) : null
+
+        const SearchResults = (
+            <List
+                itemLayout="vertical"
+                size="large"
+                pagination={{
+                    onChange: page => {
+                        console.log(page)
+                    },
+                    pageSize: 10
+                }}
+                // dataSource={listData}
+                dataSource={this.props.resultsList}
+                renderItem={item => (
+                    <List.Item
+                        key={item.news_title}
+                        actions={[<span>test1</span>, <span>test2</span>, <span>test3</span>]}
+                    >
+                        <List.Item.Meta
+                            title={item.news_title}
+                            description={
+                                <span>
+                                    <Tag>{item.author}</Tag>
+                                    <Tag>{item.site}</Tag>
+                                    {/* <Tag>{item.public_data}</Tag> */}
+                                </span>
+                            }
+                        />
+                        {item.abstract}
+                    </List.Item>
+                )}
+            />
+        )
+
         return (
             <Layout className={styles.layout}>
                 {console.log(this.props)}
@@ -175,7 +227,7 @@ class SearchWrapper extends Component {
                                                 placeholder="关键字、作者、新闻标题"
                                                 enterButton="搜索"
                                                 size="large"
-                                                onSearch={this.handleSubmit}
+                                                onSearch={() => this.handleSubmit()}
                                             />
                                         )}
                                     </FormItem>
@@ -237,41 +289,14 @@ class SearchWrapper extends Component {
                                         {AdvanceSearch}
                                     </FlipMove>
                                 </Card>
-                                <Card bordered={false} style={{ marginTop: '24px' }}>
-                                    <List
-                                        itemLayout="vertical"
-                                        size="large"
-                                        pagination={{
-                                            onChange: page => {
-                                                console.log(page)
-                                            },
-                                            pageSize: 10
-                                        }}
-                                        // dataSource={listData}
-                                        dataSource={this.props.resultsList}
-                                        renderItem={item => (
-                                            <List.Item
-                                                key={item.news_title}
-                                                actions={[
-                                                    <span>test1</span>,
-                                                    <span>test2</span>,
-                                                    <span>test3</span>
-                                                ]}
-                                            >
-                                                <List.Item.Meta
-                                                    title={item.news_title}
-                                                    description={
-                                                        <span>
-                                                            <Tag>{item.author}</Tag>
-                                                            <Tag>{item.site}</Tag>
-                                                            {/* <Tag>{item.public_data}</Tag> */}
-                                                        </span>
-                                                    }
-                                                />
-                                                {item.abstract}
-                                            </List.Item>
-                                        )}
-                                    />
+                                <Card
+                                    bordered={false}
+                                    style={{ marginTop: '24px' }}
+                                    tabList={tabList}
+                                    onTabChange={key => this.handleTabChange(key)}
+                                    activeTabKey={this.state.activeTabKey}
+                                >
+                                    {this.state.activeTabKey === 'tab1' ? SearchResults : <Pie />}
                                 </Card>
                             </div>
                         </div>
@@ -282,11 +307,5 @@ class SearchWrapper extends Component {
         )
     }
 }
-
-// class SearchResultsList extends Component {
-//     render() {
-//         return <h1>test</h1>
-//     }
-// }
 
 export default Form.create({})(SearchWrapper)

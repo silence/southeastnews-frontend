@@ -4,8 +4,10 @@
   "private": true,
   "proxy": "http://api.yurisa.com.cn",
   "dependencies": {
+    "@antv/data-set": "^0.10.0",
     "antd": "^3.10.0",
     "axios": "^0.18.0",
+    "bizcharts": "^3.2.4",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-flip-move": "^3.0.3",
