@@ -6,7 +6,6 @@ import {
     Input,
     Card,
     Form,
-    Checkbox,
     DatePicker,
     Divider,
     List,
@@ -16,9 +15,10 @@ import {
 } from 'antd'
 import styles from './index.module.scss'
 import TagSelect from './TagSelect'
+import FlipMove from 'react-flip-move'
 
 const RadioGroup = Radio.Group
-const CheckboxGroup = Checkbox.Group
+// const CheckboxGroup = Checkbox.Group
 const { RangePicker } = DatePicker
 const FormItem = Form.Item
 const { Header, Content, Footer } = Layout
@@ -26,23 +26,23 @@ const Search = Input.Search
 const Option = Select.Option
 const websitesFromServer = ['metrotv', 'sindonews', 'liputan6', 'ripublika']
 const lanOptionsFromServer = [
-    { label: '越南语', value: 'Vietnam', disabled: true },
     { label: '印度尼西亚语', value: 'Indonesia' },
+    { label: '越南语', value: 'Vietnam', disabled: true },
     { label: '马来西亚语', value: 'Malaysia', disabled: true }
 ]
 
-const listData = [
-    {
-        author: 'Tanti Yulianingsih ',
-        url:
-            'http://global.liputan6.com/read/3071643/kabar-gembira-banyak-lowongan-chef-di-australia',
-        media: 'Liputan6.com, Melbourne ',
-        abstract: 'Australia ternyata melirik juru masak dari Indonesia. Tertarik melamar?',
-        site: 'liputan6',
-        news_title: 'Kabar Gembira, Banyak Lowongan Chef di Australia',
-        public_date: '2017-08-26T00:00:00.000Z'
-    }
-]
+// const listData = [
+//     {
+//         author: 'Tanti Yulianingsih ',
+//         url:
+//             'http://global.liputan6.com/read/3071643/kabar-gembira-banyak-lowongan-chef-di-australia',
+//         media: 'Liputan6.com, Melbourne ',
+//         abstract: 'Australia ternyata melirik juru masak dari Indonesia. Tertarik melamar?',
+//         site: 'liputan6',
+//         news_title: 'Kabar Gembira, Banyak Lowongan Chef di Australia',
+//         public_date: '2017-08-26T00:00:00.000Z'
+//     }
+// ]
 
 class SearchWrapper extends Component {
     state = {
@@ -79,10 +79,13 @@ class SearchWrapper extends Component {
                         values['dateRange'][0].format('YYYY-MM-DD'),
                         values['dateRange'][1].format('YYYY-MM-DD')
                     ],
-                    sortMode: [values['sortMode'], values['searchMode']],
+                    sortMode: this.state.expand
+                        ? [values['sortModeFirst'], values['sortModeSecond']]
+                        : ['score', 'desc'],
                     from: 0
                 }
-                delete fieldValues.searchMode
+                delete fieldValues.sortModeFirst
+                delete fieldValues.sortModeSecond
                 console.log(fieldValues)
                 this.props.fetchSearchResults(fieldValues)
             }
@@ -100,8 +103,35 @@ class SearchWrapper extends Component {
             labelCol: { span: 2 },
             wrapperCol: { span: 14, offset: 1 }
         }
+        const AdvanceSearch = this.state.expand ? (
+            <div className="advanced-search">
+                <Divider dashed />
+                <FormItem label="排序模式1" {...formLayout}>
+                    {getFieldDecorator('sortModeFirst', {
+                        initialValue: 'score'
+                    })(
+                        <Select style={{ width: '30%' }}>
+                            <Option value="score">按关联度排序</Option>
+                            <Option value="time">按时间排序</Option>
+                        </Select>
+                    )}
+                </FormItem>
+                <Divider dashed />
+                <FormItem label="排序模式2" {...formLayout}>
+                    {getFieldDecorator('sortModeSecond', {
+                        initialValue: 'desc'
+                    })(
+                        <Select style={{ width: '30%' }}>
+                            <Option value="desc">降序</Option>
+                            <Option value="asc">升序</Option>
+                        </Select>
+                    )}
+                </FormItem>
+            </div>
+        ) : null
         return (
             <Layout className={styles.layout}>
+                {console.log(this.props)}
                 <Header
                     style={{
                         padding: '0'
@@ -162,6 +192,9 @@ class SearchWrapper extends Component {
                                                 'sindonews',
                                                 'liputan6',
                                                 'ripublika'
+                                            ],
+                                            rules: [
+                                                { required: true, message: '请选择至少一个网站' }
                                             ]
                                         })(
                                             <TagSelect>
@@ -179,17 +212,17 @@ class SearchWrapper extends Component {
                                         )}
                                     </FormItem>
                                     <Divider dashed />
-                                    <FormItem label="语种选择" {...formLayout}>
-                                        {getFieldDecorator('language', {
-                                            initialValue: 'Indonesia'
-                                        })(<RadioGroup options={lanOptionsFromServer} />)}
+                                    <FormItem label="时间范围选择" {...formLayout}>
+                                        {getFieldDecorator('dateRange', {
+                                            rules: [{ required: true, message: '请选择时间范围' }]
+                                        })(<RangePicker />)}
                                     </FormItem>
                                     <Divider dashed />
                                     <div style={{ position: 'relative' }}>
-                                        <FormItem label="时间范围选择" {...formLayout}>
-                                            {getFieldDecorator('dateRange', {
-                                                rules: [{ required: true }]
-                                            })(<RangePicker />)}
+                                        <FormItem label="语种选择" {...formLayout}>
+                                            {getFieldDecorator('language', {
+                                                initialValue: 'Indonesia'
+                                            })(<RadioGroup options={lanOptionsFromServer} />)}
                                         </FormItem>
                                         {/* eslint-disable-next-line*/}
                                         <a className={styles.toggle} onClick={this.handleToggle}>
@@ -197,33 +230,12 @@ class SearchWrapper extends Component {
                                             <Icon type={this.state.expand ? 'up' : 'down'} />
                                         </a>
                                     </div>
-                                    <div
-                                        className="advanced-search"
-                                        style={{ display: this.state.expand ? 'block' : 'none' }}
+                                    <FlipMove
+                                        enterAnimation="accordionVertical"
+                                        leaveAnimation="fade"
                                     >
-                                        <Divider dashed />
-                                        <FormItem label="排序模式2" {...formLayout}>
-                                            {getFieldDecorator('searchMode', {
-                                                initialValue: 'desc'
-                                            })(
-                                                <Select style={{ width: '30%' }}>
-                                                    <Option value="desc">降序</Option>
-                                                    <Option value="asc">升序</Option>
-                                                </Select>
-                                            )}
-                                        </FormItem>
-                                        <Divider dashed />
-                                        <FormItem label="排序模式1" {...formLayout}>
-                                            {getFieldDecorator('sortMode', {
-                                                initialValue: 'score'
-                                            })(
-                                                <Select style={{ width: '30%' }}>
-                                                    <Option value="score">按关联度排序</Option>
-                                                    <Option value="time">按时间排序</Option>
-                                                </Select>
-                                            )}
-                                        </FormItem>
-                                    </div>
+                                        {AdvanceSearch}
+                                    </FlipMove>
                                 </Card>
                                 <Card bordered={false} style={{ marginTop: '24px' }}>
                                     <List
@@ -277,8 +289,4 @@ class SearchWrapper extends Component {
 //     }
 // }
 
-export default Form.create({
-    onValuesChange(_, values) {
-        console.log(values)
-    }
-})(SearchWrapper)
+export default Form.create({})(SearchWrapper)
