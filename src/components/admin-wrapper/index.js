@@ -147,17 +147,20 @@ class AdminWrapper extends Component {
             {
                 title: 'Id',
                 dataIndex: 'key', // key为连续值,id为数据库唯一值
-                key: 'id'
+                key: 'id',
+                width: 100
             },
             {
                 title: '用户名',
                 dataIndex: 'username',
-                key: 'username'
+                key: 'username',
+                width: 100
             },
             {
                 title: '权限',
                 key: 'isadmin',
                 dataIndex: 'isadmin',
+                width: 100,
                 render: isadmin =>
                     isadmin ? (
                         <Tag color="cyan" key>
@@ -172,6 +175,7 @@ class AdminWrapper extends Component {
             {
                 title: '操作',
                 key: 'action',
+                width: 100,
                 render: (text, record) => (
                     <span>
                         {/* <a>修改密码</a>
@@ -248,12 +252,22 @@ class AdminWrapper extends Component {
                             <Table
                                 columns={columns}
                                 dataSource={this.props.userList}
-                                pagination={{ pageSize: 8 }}
+                                pagination={{ pageSize: 10 }}
+                                scroll={{ x: '100%', y: '40vh' }}
                             />
                         )}
                     </Card>
                 </Content>
-                <Footer style={{ textAlign: 'center' }}>©2018 StarStudio</Footer>
+                <Footer
+                    style={{
+                        textAlign: 'center',
+                        height: '9.6vh',
+                        lineHeight: '9vh',
+                        padding: 0
+                    }}
+                >
+                    ©2018 StarStudio
+                </Footer>
             </Layout>
         )
     }

@@ -1,6 +1,6 @@
 {
   "name": "southeast-asia-news2",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "proxy": "http://api.yurisa.com.cn",
   "dependencies": {
@@ -29,7 +29,7 @@
       "semi": [2, "never"],
       "indent": ["error", 4, { "SwitchCase": 1 }],
       "jsx-a11y/href-no-hash": "off",
-      "jsx-a11y/anchor-is-valid": ["warn", { "aspects": ["invalidHref"] }]
+      "jsx-a11y/anchor-is-valid": "off"
     }
   },
   "browserslist": [

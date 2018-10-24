@@ -10,16 +10,18 @@ import {
     DatePicker,
     Divider,
     List,
-    Tag
+    Tag,
+    Select
 } from 'antd'
 import styles from './index.module.scss'
-import TagSelect from '../TagSelect'
+import TagSelect from './TagSelect'
 
 const CheckboxGroup = Checkbox.Group
 const { RangePicker } = DatePicker
 const FormItem = Form.Item
 const { Header, Content, Footer } = Layout
 const Search = Input.Search
+const Option = Select.Option
 const websitesFromServer = ['metrotv', 'sindonews', 'liputan6', 'ripublika']
 const lanOptionsFromServer = [
     { label: '越南语', value: 'Vietnam', disabled: true },
@@ -42,10 +44,15 @@ const listData = [
 
 class SearchWrapper extends Component {
     state = {
-        selectedWebsites: []
+        expand: false
     }
 
     handleWebsiteCheck = (website, isCheck) => {}
+
+    handleToggle = () => {
+        const { expand } = this.state
+        this.setState({ expand: !expand })
+    }
 
     handleNavClick = e => {
         console.log(e)
@@ -59,6 +66,15 @@ class SearchWrapper extends Component {
             this.props.history.push('/login')
         }
     }
+
+    handleSubmit = () => {
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values)
+            }
+        })
+    }
+
     render() {
         const admin = this.props.isAdmin ? (
             <Menu.Item key="admin" className={styles.floatRight}>
@@ -102,23 +118,29 @@ class SearchWrapper extends Component {
                     </div>
                 </Header>
                 <Content>
-                    <div className={styles['page-content']}>
-                        <div className={styles['content-wrapper']}>
-                            <h1>搜索列表</h1>
-                            <div className={styles['search-wrapper']}>
-                                <Search
-                                    placeholder="关键字、作者、新闻标题"
-                                    enterButton="搜索"
-                                    size="large"
-                                    onSearch={value => console.log(value)}
-                                />
+                    <Form layout="horizontal">
+                        <div className={styles['page-content']}>
+                            <div className={styles['content-wrapper']}>
+                                <h1>搜索列表</h1>
+                                <div className={styles['search-wrapper']}>
+                                    <FormItem>
+                                        {getFieldDecorator('keyword', {
+                                            rules: [{ required: true, message: '请输入搜索关键字' }]
+                                        })(
+                                            <Search
+                                                placeholder="关键字、作者、新闻标题"
+                                                enterButton="搜索"
+                                                size="large"
+                                                onSearch={this.handleSubmit}
+                                            />
+                                        )}
+                                    </FormItem>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className={styles['list-content']}>
-                        <div className={styles['grid-content']}>
-                            <Card bordered={false}>
-                                <Form layout="horizontal">
+                        <div className={styles['list-content']}>
+                            <div className={styles['grid-content']}>
+                                <Card bordered={false}>
                                     <FormItem label="网站选择" {...formLayout}>
                                         {getFieldDecorator('website', {})(
                                             <TagSelect>
@@ -142,48 +164,81 @@ class SearchWrapper extends Component {
                                         })(<CheckboxGroup options={lanOptionsFromServer} />)}
                                     </FormItem>
                                     <Divider dashed />
-                                    <FormItem label="时间范围选择" {...formLayout}>
-                                        {getFieldDecorator('range-picker')(<RangePicker />)}
-                                    </FormItem>
-                                </Form>
-                            </Card>
-                            <Card bordered={false} style={{ marginTop: '24px' }}>
-                                <List
-                                    itemLayout="vertical"
-                                    size="large"
-                                    pagination={{
-                                        onChange: page => {
-                                            console.log(page)
-                                        },
-                                        pageSize: 10
-                                    }}
-                                    dataSource={listData}
-                                    renderItem={item => (
-                                        <List.Item
-                                            key={item.news_title}
-                                            actions={[
-                                                <span>test1</span>,
-                                                <span>test2</span>,
-                                                <span>test3</span>
-                                            ]}
-                                        >
-                                            <List.Item.Meta
-                                                title={item.news_title}
-                                                description={
-                                                    <span>
-                                                        <Tag>{item.author}</Tag>
-                                                        <Tag>{item.site}</Tag>
-                                                        {/* <Tag>{item.public_data}</Tag> */}
-                                                    </span>
-                                                }
-                                            />
-                                            {item.abstract}
-                                        </List.Item>
-                                    )}
-                                />
-                            </Card>
+                                    <div style={{ position: 'relative' }}>
+                                        <FormItem label="时间范围选择" {...formLayout}>
+                                            {getFieldDecorator('range-picker')(<RangePicker />)}
+                                        </FormItem>
+                                        <a className={styles.toggle} onClick={this.handleToggle}>
+                                            高级搜索
+                                            <Icon type={this.state.expand ? 'up' : 'down'} />
+                                        </a>
+                                    </div>
+                                    <div
+                                        className="advanced-search"
+                                        style={{ display: this.state.expand ? 'block' : 'none' }}
+                                    >
+                                        <Divider dashed />
+                                        <FormItem label="搜索模式" {...formLayout}>
+                                            {getFieldDecorator('searchMode', {
+                                                initialValue: 'or'
+                                            })(
+                                                <Select style={{ width: '30%' }}>
+                                                    <Option value="and">且模式</Option>
+                                                    <Option value="or">或模式</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                        <Divider dashed />
+                                        <FormItem label="排序模式" {...formLayout}>
+                                            {getFieldDecorator('sortMode', {
+                                                initialValue: 'score'
+                                            })(
+                                                <Select style={{ width: '30%' }}>
+                                                    <Option value="score">按关联度排序</Option>
+                                                    <Option value="time">按时间排序</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </Card>
+                                <Card bordered={false} style={{ marginTop: '24px' }}>
+                                    <List
+                                        itemLayout="vertical"
+                                        size="large"
+                                        pagination={{
+                                            onChange: page => {
+                                                console.log(page)
+                                            },
+                                            pageSize: 10
+                                        }}
+                                        dataSource={listData}
+                                        renderItem={item => (
+                                            <List.Item
+                                                key={item.news_title}
+                                                actions={[
+                                                    <span>test1</span>,
+                                                    <span>test2</span>,
+                                                    <span>test3</span>
+                                                ]}
+                                            >
+                                                <List.Item.Meta
+                                                    title={item.news_title}
+                                                    description={
+                                                        <span>
+                                                            <Tag>{item.author}</Tag>
+                                                            <Tag>{item.site}</Tag>
+                                                            {/* <Tag>{item.public_data}</Tag> */}
+                                                        </span>
+                                                    }
+                                                />
+                                                {item.abstract}
+                                            </List.Item>
+                                        )}
+                                    />
+                                </Card>
+                            </div>
                         </div>
-                    </div>
+                    </Form>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>©2018 StarStudio</Footer>
             </Layout>
@@ -191,11 +246,11 @@ class SearchWrapper extends Component {
     }
 }
 
-class SearchResultsList extends Component {
-    render() {
-        return <h1>test</h1>
-    }
-}
+// class SearchResultsList extends Component {
+//     render() {
+//         return <h1>test</h1>
+//     }
+// }
 
 export default Form.create({
     onValuesChange(_, values) {

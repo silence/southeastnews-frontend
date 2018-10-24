@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import SearchWrapper from '../components/search-wrapper'
 import { withRouter } from 'react-router-dom'
 import { getUserInfo, logout } from '../actions/login-action'
+import { fetchSearchResults } from '../actions/search-action'
 
 class SearchWrapperPage extends Component {
     render() {
@@ -10,10 +11,11 @@ class SearchWrapperPage extends Component {
             <>
                 {console.log(this.props)}
                 <SearchWrapper
-                    isAdmin={this.props.isAdmin}
-                    getUserInfo={this.props.getUserInfo}
-                    history={this.props.history}
-                    logout={this.props.logout}
+                    // isAdmin={this.props.isAdmin}
+                    // getUserInfo={this.props.getUserInfo}
+                    // history={this.props.history}
+                    // logout={this.props.logout}
+                    {...this.props}
                 />
             </>
         )
@@ -22,13 +24,15 @@ class SearchWrapperPage extends Component {
 
 function mapStateToProps(state) {
     return {
-        isAdmin: state.loginStore.isAdmin
+        isAdmin: state.loginStore.isAdmin,
+        fetchResultsLoading: state.searchStore.fetchResultsLoading,
+        resultsList: state.searchStore.resultsList
     }
 }
 
 export default withRouter(
     connect(
         mapStateToProps,
-        { getUserInfo, logout }
+        { getUserInfo, logout, fetchSearchResults }
     )(SearchWrapperPage)
 )
