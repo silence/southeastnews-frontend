@@ -168,6 +168,7 @@ class SearchWrapper extends Component {
                                         <FormItem label="时间范围选择" {...formLayout}>
                                             {getFieldDecorator('range-picker')(<RangePicker />)}
                                         </FormItem>
+                                        {/* eslint-disable-next-line*/}
                                         <a className={styles.toggle} onClick={this.handleToggle}>
                                             高级搜索
                                             <Icon type={this.state.expand ? 'up' : 'down'} />

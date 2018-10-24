@@ -185,6 +185,7 @@ class AdminWrapper extends Component {
                             onConfirm={() => this.handleDeleteConfirm(record.id)}
                             onCancel={() => {}}
                         >
+                            {/* eslint-disable-next-line*/}
                             <a style={{ color: 'red' }}>删除用户</a>
                         </Popconfirm>
                     </span>

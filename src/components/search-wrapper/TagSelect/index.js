@@ -120,6 +120,7 @@ class TagSelect extends Component {
                         return child
                     })}
                 {expandable && (
+                    // eslint-disable-next-line
                     <a className={styles.trigger} onClick={this.handleExpand}>
                         {expand ? '收起' : '展开'} <Icon type={expand ? 'up' : 'down'} />
                     </a>
