@@ -11,11 +11,13 @@ import {
     Divider,
     List,
     Tag,
-    Select
+    Select,
+    Radio
 } from 'antd'
 import styles from './index.module.scss'
 import TagSelect from './TagSelect'
 
+const RadioGroup = Radio.Group
 const CheckboxGroup = Checkbox.Group
 const { RangePicker } = DatePicker
 const FormItem = Form.Item
@@ -71,6 +73,18 @@ class SearchWrapper extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values)
+                const fieldValues = {
+                    ...values,
+                    dateRange: [
+                        values['dateRange'][0].format('YYYY-MM-DD'),
+                        values['dateRange'][1].format('YYYY-MM-DD')
+                    ],
+                    sortMode: [values['sortMode'], values['searchMode']],
+                    from: 0
+                }
+                delete fieldValues.searchMode
+                console.log(fieldValues)
+                this.props.fetchSearchResults(fieldValues)
             }
         })
     }
@@ -124,7 +138,7 @@ class SearchWrapper extends Component {
                                 <h1>搜索列表</h1>
                                 <div className={styles['search-wrapper']}>
                                     <FormItem>
-                                        {getFieldDecorator('keyword', {
+                                        {getFieldDecorator('query', {
                                             rules: [{ required: true, message: '请输入搜索关键字' }]
                                         })(
                                             <Search
@@ -142,7 +156,14 @@ class SearchWrapper extends Component {
                             <div className={styles['grid-content']}>
                                 <Card bordered={false}>
                                     <FormItem label="网站选择" {...formLayout}>
-                                        {getFieldDecorator('website', {})(
+                                        {getFieldDecorator('index', {
+                                            initialValue: [
+                                                'metrotv',
+                                                'sindonews',
+                                                'liputan6',
+                                                'ripublika'
+                                            ]
+                                        })(
                                             <TagSelect>
                                                 {websitesFromServer.map(website => {
                                                     return (
@@ -159,14 +180,16 @@ class SearchWrapper extends Component {
                                     </FormItem>
                                     <Divider dashed />
                                     <FormItem label="语种选择" {...formLayout}>
-                                        {getFieldDecorator('lanSelect', {
-                                            initialValue: ['Indonesia']
-                                        })(<CheckboxGroup options={lanOptionsFromServer} />)}
+                                        {getFieldDecorator('language', {
+                                            initialValue: 'Indonesia'
+                                        })(<RadioGroup options={lanOptionsFromServer} />)}
                                     </FormItem>
                                     <Divider dashed />
                                     <div style={{ position: 'relative' }}>
                                         <FormItem label="时间范围选择" {...formLayout}>
-                                            {getFieldDecorator('range-picker')(<RangePicker />)}
+                                            {getFieldDecorator('dateRange', {
+                                                rules: [{ required: true }]
+                                            })(<RangePicker />)}
                                         </FormItem>
                                         {/* eslint-disable-next-line*/}
                                         <a className={styles.toggle} onClick={this.handleToggle}>
@@ -179,18 +202,18 @@ class SearchWrapper extends Component {
                                         style={{ display: this.state.expand ? 'block' : 'none' }}
                                     >
                                         <Divider dashed />
-                                        <FormItem label="搜索模式" {...formLayout}>
+                                        <FormItem label="排序模式2" {...formLayout}>
                                             {getFieldDecorator('searchMode', {
-                                                initialValue: 'or'
+                                                initialValue: 'desc'
                                             })(
                                                 <Select style={{ width: '30%' }}>
-                                                    <Option value="and">且模式</Option>
-                                                    <Option value="or">或模式</Option>
+                                                    <Option value="desc">降序</Option>
+                                                    <Option value="asc">升序</Option>
                                                 </Select>
                                             )}
                                         </FormItem>
                                         <Divider dashed />
-                                        <FormItem label="排序模式" {...formLayout}>
+                                        <FormItem label="排序模式1" {...formLayout}>
                                             {getFieldDecorator('sortMode', {
                                                 initialValue: 'score'
                                             })(
@@ -212,7 +235,8 @@ class SearchWrapper extends Component {
                                             },
                                             pageSize: 10
                                         }}
-                                        dataSource={listData}
+                                        // dataSource={listData}
+                                        dataSource={this.props.resultsList}
                                         renderItem={item => (
                                             <List.Item
                                                 key={item.news_title}
