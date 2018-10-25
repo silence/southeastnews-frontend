@@ -12,9 +12,12 @@ import {
     Guide,
     Shape,
     Facet,
-    Util
+    Util,
+    track
 } from 'bizcharts'
 import DataSet from '@antv/data-set'
+
+track(false)
 
 class Labelline extends React.Component {
     state = {

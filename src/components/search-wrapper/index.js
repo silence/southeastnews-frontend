@@ -32,6 +32,8 @@ const lanOptionsFromServer = [
     { label: '马来西亚语', value: 'Malaysia', disabled: true }
 ]
 
+const device = window.matchMedia('(max-width: 700px)').matches // true: mobile , false: PC
+
 // const listData = [
 //     {
 //         author: 'Tanti Yulianingsih ',
@@ -50,8 +52,6 @@ class SearchWrapper extends Component {
         expand: false,
         activeTabKey: 'tab1'
     }
-
-    handleWebsiteCheck = (website, isCheck) => {}
 
     handleToggle = () => {
         const { expand } = this.state
@@ -82,10 +82,17 @@ class SearchWrapper extends Component {
                 console.log('Received values of form: ', values)
                 const fieldValues = {
                     ...values,
-                    dateRange: [
-                        values['dateRange'][0].format('YYYY-MM-DD'),
-                        values['dateRange'][1].format('YYYY-MM-DD')
-                    ],
+                    // dateRange: default is ALL
+                    dateRange: device
+                        ? values['rangeMin'] && values['rangeMax']
+                            ? [values['rangeMin'], values['rangeMax']]
+                            : ['1000-01-01', '3000-01-01']
+                        : values['dateRange']
+                            ? [
+                                  values['dateRange'][0].format('YYYY-MM-DD'),
+                                  values['dateRange'][1].format('YYYY-MM-DD')
+                              ]
+                            : ['1000-01-01', '3000-01-01'],
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
                         : ['score', 'desc'],
@@ -93,6 +100,8 @@ class SearchWrapper extends Component {
                 }
                 delete fieldValues.sortModeFirst
                 delete fieldValues.sortModeSecond
+                delete fieldValues.rangeMax
+                delete fieldValues.rangeMin
                 console.log(fieldValues)
                 this.props.fetchSearchResults(fieldValues)
             }
@@ -113,11 +122,21 @@ class SearchWrapper extends Component {
         const tabList = [
             {
                 key: 'tab1',
-                tab: '搜索结果'
+                tab: (
+                    <>
+                        <Icon type="ordered-list" theme="outlined" />
+                        <span>搜索结果</span>
+                    </>
+                )
             },
             {
                 key: 'tab2',
-                tab: '图表展示'
+                tab: (
+                    <>
+                        <Icon type="pie-chart" theme="outlined" />
+                        <span>统计信息</span>
+                    </>
+                )
             }
         ]
 
@@ -181,9 +200,57 @@ class SearchWrapper extends Component {
             />
         )
 
+        const MobileDateRange = (
+            <FormItem label="时间范围选择" {...formLayout}>
+                <Input.Group compact>
+                    {getFieldDecorator('rangeMin', {
+                        rules: [
+                            {
+                                pattern: /[12]\d\d\d-((0[1-9])|(1[012]))-((0[1-9])|(1\d)|(2\d)|(3[01]))/,
+                                message: '格式不正确'
+                            }
+                        ]
+                    })(
+                        <Input
+                            style={{ width: 120, textAlign: 'center' }}
+                            placeholder="2000-01-01"
+                        />
+                    )}
+                    <Input
+                        style={{
+                            width: 30,
+                            borderLeft: 0,
+                            pointerEvents: 'none',
+                            backgroundColor: '#fff'
+                        }}
+                        placeholder="~"
+                        disabled
+                    />
+                    {getFieldDecorator('rangeMax', {
+                        rules: [
+                            {
+                                pattern: /[12]\d\d\d-((0[1-9])|(1[012]))-((0[1-9])|(1\d)|(2\d)|(3[01]))/,
+                                message: '格式不正确'
+                            }
+                        ]
+                    })(
+                        <Input
+                            style={{ width: 120, textAlign: 'center', borderLeft: 0 }}
+                            placeholder="2020-01-01"
+                        />
+                    )}
+                </Input.Group>
+            </FormItem>
+        )
+
+        const PCDateRange = (
+            <FormItem label="时间范围选择" {...formLayout}>
+                {getFieldDecorator('dateRange', {})(<RangePicker />)}
+            </FormItem>
+        )
+
         return (
             <Layout className={styles.layout}>
-                {console.log(this.props)}
                 <Header
                     style={{
                         padding: '0'
@@ -201,7 +268,7 @@ class SearchWrapper extends Component {
                                     borderBottom: '0',
                                     fontSize: 20,
                                     color: '#1890ff',
-                                    padding: '0'
+                                    paddingLeft: '24px'
                                 }}
                             >
                                 东南亚新闻搜索
@@ -264,11 +331,9 @@ class SearchWrapper extends Component {
                                         )}
                                     </FormItem>
                                     <Divider dashed />
-                                    <FormItem label="时间范围选择" {...formLayout}>
-                                        {getFieldDecorator('dateRange', {
-                                            rules: [{ required: true, message: '请选择时间范围' }]
-                                        })(<RangePicker />)}
-                                    </FormItem>
+
+                                    {device ? MobileDateRange : PCDateRange}
+
                                     <Divider dashed />
                                     <div style={{ position: 'relative' }}>
                                         <FormItem label="语种选择" {...formLayout}>

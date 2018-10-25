@@ -1,7 +1,19 @@
+@media (max-width: 700px) {
+    .wrapper {
+        width: 100% !important;
+    }
+    .login-form {
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+}
+
 .login-wrapper {
     height: -webkit-fill-available;
     background: url(../../images/login.png) no-repeat;
     background-size: cover;
+    position: relative;
+    width: 100%;
     .wrapper {
         width: 500px;
         height: inherit;

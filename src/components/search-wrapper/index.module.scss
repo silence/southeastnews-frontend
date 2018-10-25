@@ -28,6 +28,7 @@
             margin: auto;
             height: inherit;
             position: relative;
+            padding: 0 24px;
             h1 {
                 font-size: 20px;
                 font-weight: 500;
@@ -57,5 +58,18 @@
                 bottom: 8px;
             }
         }
+    }
+}
+
+@media (max-width: 700px) {
+    :global(.ant-input-lg) {
+        font-size: 12px !important;
+    }
+    .toggle {
+        bottom: -16px !important;
+        right: 8px !important;
+    }
+    .search-wrapper {
+        width: 85% !important;
     }
 }
