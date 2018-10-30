@@ -1,3 +1,8 @@
+/*
+ugly code (:
+need to refactor
+*/
+
 import React, { Component } from 'react'
 import {
     Layout,
@@ -25,10 +30,10 @@ const FormItem = Form.Item
 const { Header, Content, Footer } = Layout
 const Search = Input.Search
 const Option = Select.Option
-const websitesFromServer = ['metrotv', 'sindonews', 'liputan6', 'ripublika']
+//const websitesFromServer = ['metrotv', 'sindonews', 'liputan6', 'ripublika']
 const lanOptionsFromServer = [
     { label: '印度尼西亚语', value: 'Indonesia' },
-    { label: '越南语', value: 'Vietnam', disabled: true },
+    { label: '越南语', value: 'Vietnam' },
     { label: '马来西亚语', value: 'Malaysia', disabled: true }
 ]
 
@@ -50,7 +55,8 @@ const device = window.matchMedia('(max-width: 700px)').matches // true: mobile ,
 class SearchWrapper extends Component {
     state = {
         expand: false,
-        activeTabKey: 'tab1'
+        activeTabKey: 'tab1',
+        websites: ['metrotv', 'sindonews', 'liputan6', 'ripublika']
     }
 
     handleToggle = () => {
@@ -74,6 +80,42 @@ class SearchWrapper extends Component {
     handleTabChange = key => {
         console.log(key)
         this.setState({ activeTabKey: key })
+        if (key == 'tab2') {
+            this.props.form.validateFields((err, values) => {
+                if (!err) {
+                    console.log(
+                        this.props.form.getFieldsValue(['dateRange', 'language', 'index', 'query'])
+                    )
+                    const fieldValues = {
+                        ...this.props.form.getFieldsValue([
+                            'dataRange',
+                            'language',
+                            'index',
+                            'query'
+                        ]),
+                        dateRange: device
+                            ? values['rangeMin'] && values['rangeMax']
+                                ? [values['rangeMin'], values['rangeMax']]
+                                : ['1000-01-01', '3000-01-01']
+                            : values['dateRange']
+                                ? [
+                                      values['dateRange'][0].format('YYYY-MM-DD'),
+                                      values['dateRange'][1].format('YYYY-MM-DD')
+                                  ]
+                                : ['1000-01-01', '3000-01-01']
+                    }
+                    this.props.chartApi(fieldValues)
+
+                    // this.props.chartApi(
+                    //     this.props.form.getFieldsValue(['dateRange', 'language', 'index', 'query'])
+                    // )
+                }
+            })
+        }
+    }
+
+    handleLanguageSelect = e => {
+        this.setState({ websites: this.props.languages[e.target.value] })
     }
 
     handleSubmit = () => {
@@ -82,7 +124,7 @@ class SearchWrapper extends Component {
                 console.log('Received values of form: ', values)
                 const fieldValues = {
                     ...values,
-                    // dateRange: default is ALL
+                    // dateRange: default is ALL time
                     dateRange: device
                         ? values['rangeMin'] && values['rangeMax']
                             ? [values['rangeMin'], values['rangeMax']]
@@ -96,7 +138,7 @@ class SearchWrapper extends Component {
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
                         : ['score', 'desc'],
-                    from: 0
+                    from: 0 // todo
                 }
                 delete fieldValues.sortModeFirst
                 delete fieldValues.sortModeSecond
@@ -306,18 +348,18 @@ class SearchWrapper extends Component {
                                 <Card bordered={false}>
                                     <FormItem label="网站选择" {...formLayout}>
                                         {getFieldDecorator('index', {
-                                            initialValue: [
-                                                'metrotv',
-                                                'sindonews',
-                                                'liputan6',
-                                                'ripublika'
-                                            ],
+                                            // initialValue: [
+                                            //     'metrotv',
+                                            //     'sindonews',
+                                            //     'liputan6',
+                                            //     'ripublika'
+                                            // ],
                                             rules: [
                                                 { required: true, message: '请选择至少一个网站' }
                                             ]
                                         })(
                                             <TagSelect>
-                                                {websitesFromServer.map(website => {
+                                                {this.state.websites.map(website => {
                                                     return (
                                                         <TagSelect.Option
                                                             value={website}
@@ -339,7 +381,12 @@ class SearchWrapper extends Component {
                                         <FormItem label="语种选择" {...formLayout}>
                                             {getFieldDecorator('language', {
                                                 initialValue: 'Indonesia'
-                                            })(<RadioGroup options={lanOptionsFromServer} />)}
+                                            })(
+                                                <RadioGroup
+                                                    options={lanOptionsFromServer}
+                                                    onChange={e => this.handleLanguageSelect(e)}
+                                                />
+                                            )}
                                         </FormItem>
                                         {/* eslint-disable-next-line*/}
                                         <a className={styles.toggle} onClick={this.handleToggle}>
@@ -361,7 +408,14 @@ class SearchWrapper extends Component {
                                     onTabChange={key => this.handleTabChange(key)}
                                     activeTabKey={this.state.activeTabKey}
                                 >
-                                    {this.state.activeTabKey === 'tab1' ? SearchResults : <Pie />}
+                                    {this.state.activeTabKey === 'tab1' ? (
+                                        SearchResults
+                                    ) : (
+                                        <>
+                                            <Pie data={this.props.countResult} />
+                                            <GeneratePies {...this.props} />
+                                        </>
+                                    )}
                                 </Card>
                             </div>
                         </div>
@@ -371,6 +425,14 @@ class SearchWrapper extends Component {
             </Layout>
         )
     }
+}
+
+function GeneratePies() {
+    const timePie = []
+    for (let [key, value] of Object.entries(this.props.timeResult)) {
+        timePie.push(<Pie data={value} key={key} />)
+    }
+    return <div>{timePie}</div>
 }
 
 export default Form.create({})(SearchWrapper)

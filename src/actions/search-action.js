@@ -9,3 +9,21 @@ export function fetchSearchResults(data) {
         })
     }
 }
+
+export function getIndex() {
+    return dispatch => {
+        return dispatch({
+            type: 'GET_INDEX',
+            payload: client.get(`${url}/getIndex.php`)
+        })
+    }
+}
+
+export function chartApi(data) {
+    return dispatch => {
+        return dispatch({
+            type: 'CHART_API',
+            payload: client.post(`${url}/chartApi.php`, data)
+        })
+    }
+}

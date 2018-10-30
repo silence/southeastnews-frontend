@@ -3,9 +3,12 @@ import { connect } from 'react-redux'
 import SearchWrapper from '../components/search-wrapper'
 import { withRouter } from 'react-router-dom'
 import { getUserInfo, logout } from '../actions/login-action'
-import { fetchSearchResults } from '../actions/search-action'
+import { fetchSearchResults, getIndex, chartApi } from '../actions/search-action'
 
 class SearchWrapperPage extends Component {
+    componentDidMount() {
+        this.props.getIndex()
+    }
     render() {
         return (
             <>
@@ -26,13 +29,16 @@ function mapStateToProps(state) {
     return {
         isAdmin: state.loginStore.isAdmin,
         fetchResultsLoading: state.searchStore.fetchResultsLoading,
-        resultsList: state.searchStore.resultsList
+        resultsList: state.searchStore.resultsList,
+        languages: state.searchStore.languages,
+        countResult: state.searchStore.countResult,
+        timeResult: state.searchStore.timeResult
     }
 }
 
 export default withRouter(
     connect(
         mapStateToProps,
-        { getUserInfo, logout, fetchSearchResults }
+        { getUserInfo, logout, fetchSearchResults, getIndex, chartApi }
     )(SearchWrapperPage)
 )
