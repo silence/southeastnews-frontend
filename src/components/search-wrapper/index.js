@@ -16,7 +16,8 @@ import {
     List,
     Tag,
     Select,
-    Radio
+    Radio,
+    Spin
 } from 'antd'
 import styles from './index.module.scss'
 import TagSelect from './TagSelect'
@@ -410,10 +411,12 @@ class SearchWrapper extends Component {
                                 >
                                     {this.state.activeTabKey === 'tab1' ? (
                                         SearchResults
+                                    ) : this.props.chartLoading ? (
+                                        <Spin />
                                     ) : (
                                         <>
                                             <Pie data={this.props.countResult} />
-                                            <GeneratePies {...this.props} />
+                                            <GeneratePies timeResult={this.props.timeResult} />
                                         </>
                                     )}
                                 </Card>
@@ -427,9 +430,9 @@ class SearchWrapper extends Component {
     }
 }
 
-function GeneratePies() {
+function GeneratePies({ timeResult }) {
     const timePie = []
-    for (let [key, value] of Object.entries(this.props.timeResult)) {
+    for (let [key, value] of Object.entries(timeResult)) {
         timePie.push(<Pie data={value} key={key} />)
     }
     return <div>{timePie}</div>

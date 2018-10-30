@@ -3,7 +3,8 @@ const defaultState = {
     resultsList: [],
     languages: null,
     countResult: [],
-    timeResult: null
+    timeResult: null,
+    chartLoading: 1
 }
 
 export default (state = defaultState, action = {}) => {
@@ -30,11 +31,18 @@ export default (state = defaultState, action = {}) => {
                 // )
             }
         }
+        case 'CHART_API_PENDING': {
+            return {
+                ...state,
+                chartLoading: 1
+            }
+        }
         case 'CHART_API_FULFILLED': {
             return {
                 ...state,
                 countResult: action.payload.data.count_result,
-                timeResult: action.payload.data.time_result
+                timeResult: action.payload.data.time_result,
+                chartLoading: 0
             }
         }
         default:

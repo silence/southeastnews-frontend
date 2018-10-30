@@ -32,7 +32,8 @@ function mapStateToProps(state) {
         resultsList: state.searchStore.resultsList,
         languages: state.searchStore.languages,
         countResult: state.searchStore.countResult,
-        timeResult: state.searchStore.timeResult
+        timeResult: state.searchStore.timeResult,
+        chartLoading: state.searchStore.chartLoading
     }
 }
 
