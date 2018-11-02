@@ -64,22 +64,23 @@ class LabelLine extends React.Component {
         const cols = {
             percent: {
                 formatter: val => {
-                    val = val * 100 + '%'
-                    return val
+                    val = val * 100
+                    return `${val.toFixed(2)}%`
                 }
             }
         }
         return (
             <div>
                 <Chart
-                    height={window.innerHeight}
+                    height={window.innerHeight / 2}
                     data={dv}
                     scale={cols}
                     padding={[80, 100, 80, 80]}
-                    forceFit
+                    forceFit={true}
                     onGetG2Instance={chartIns => {
                         this.setState({ chartIns: chartIns })
                     }}
+                    className="chartTest"
                 >
                     <Coord type="theta" radius={0.75} />
                     <Axis name="percent" />
@@ -99,7 +100,7 @@ class LabelLine extends React.Component {
                         tooltip={[
                             'item*percent',
                             (item, percent) => {
-                                percent = percent * 100 + '%'
+                                percent = percent.toFixed(4) * 100 + '%'
                                 return {
                                     name: item,
                                     value: percent

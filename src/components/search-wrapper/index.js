@@ -57,7 +57,8 @@ class SearchWrapper extends Component {
     state = {
         expand: false,
         activeTabKey: 'tab1',
-        websites: ['metrotv', 'sindonews', 'liputan6', 'ripublika']
+        // websites: ['metrotv', 'sindonews', 'liputan6', 'ripublika']
+        activeLan: 'Indonesia'
     }
 
     handleToggle = () => {
@@ -116,7 +117,7 @@ class SearchWrapper extends Component {
     }
 
     handleLanguageSelect = e => {
-        this.setState({ websites: this.props.languages[e.target.value] })
+        this.setState({ activeLan: e.target.value })
     }
 
     handleSubmit = () => {
@@ -225,19 +226,26 @@ class SearchWrapper extends Component {
                 renderItem={item => (
                     <List.Item
                         key={item.news_title}
-                        actions={[<span>test1</span>, <span>test2</span>, <span>test3</span>]}
+                        actions={[
+                            <span>关键字统计</span>,
+                            <span>在线阅读</span>
+                            // <span>test3</span>
+                        ]}
                     >
                         <List.Item.Meta
                             title={item.news_title}
                             description={
                                 <span>
-                                    <Tag>{item.author}</Tag>
-                                    <Tag>{item.site}</Tag>
-                                    {/* <Tag>{item.public_data}</Tag> */}
+                                    作者：
+                                    <Tag color="blue">{item.author}</Tag>
+                                    网站：
+                                    <Tag color="green">{item.site}</Tag>
+                                    发表时间：
+                                    <Tag color="magenta">{item.public_date.slice(0, 10)}</Tag>
                                 </span>
                             }
                         />
-                        {item.abstract}
+                        {`摘要：${item.abstract}`}
                     </List.Item>
                 )}
             />
@@ -360,16 +368,22 @@ class SearchWrapper extends Component {
                                             ]
                                         })(
                                             <TagSelect>
-                                                {this.state.websites.map(website => {
-                                                    return (
-                                                        <TagSelect.Option
-                                                            value={website}
-                                                            key={website}
-                                                        >
-                                                            {website}
-                                                        </TagSelect.Option>
+                                                {this.props.getIndexLoading ? (
+                                                    <Spin />
+                                                ) : (
+                                                    this.props.languages[this.state.activeLan].map(
+                                                        website => {
+                                                            return (
+                                                                <TagSelect.Option
+                                                                    value={website}
+                                                                    key={website}
+                                                                >
+                                                                    {website}
+                                                                </TagSelect.Option>
+                                                            )
+                                                        }
                                                     )
-                                                })}
+                                                )}
                                             </TagSelect>
                                         )}
                                     </FormItem>

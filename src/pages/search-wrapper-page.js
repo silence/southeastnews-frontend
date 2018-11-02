@@ -28,12 +28,13 @@ class SearchWrapperPage extends Component {
 function mapStateToProps(state) {
     return {
         isAdmin: state.loginStore.isAdmin,
-        fetchResultsLoading: state.searchStore.fetchResultsLoading,
-        resultsList: state.searchStore.resultsList,
-        languages: state.searchStore.languages,
-        countResult: state.searchStore.countResult,
-        timeResult: state.searchStore.timeResult,
-        chartLoading: state.searchStore.chartLoading
+        // fetchResultsLoading: state.searchStore.fetchResultsLoading,
+        // resultsList: state.searchStore.resultsList,
+        // languages: state.searchStore.languages,
+        // countResult: state.searchStore.countResult,
+        // timeResult: state.searchStore.timeResult,
+        // chartLoading: state.searchStore.chartLoading
+        ...state.searchStore
     }
 }
 

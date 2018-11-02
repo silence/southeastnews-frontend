@@ -4,7 +4,8 @@ const defaultState = {
     languages: null,
     countResult: [],
     timeResult: null,
-    chartLoading: 1
+    chartLoading: 1,
+    getIndexLoading: 1
 }
 
 export default (state = defaultState, action = {}) => {
@@ -22,10 +23,17 @@ export default (state = defaultState, action = {}) => {
                 resultsList: action.payload.data
             }
         }
+        case 'GET_INDEX_PENDING': {
+            return {
+                ...state,
+                getIndexLoading: 1
+            }
+        }
         case 'GET_INDEX_FULFILLED': {
             return {
                 ...state,
-                languages: action.payload.data
+                languages: action.payload.data,
+                getIndexLoading: 0
                 // languages: Object.keys(action.payload.data).map(lan =>
                 //     lan.replace(/^[a-z]/, l => l.toUpperCase())
                 // )
