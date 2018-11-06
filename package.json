@@ -2,6 +2,7 @@
   "name": "southeast-asia-news2",
   "version": "1.0.0",
   "private": true,
+  "homepage": ".",
   "proxy": "http://localhost:8080",
   "dependencies": {
     "@antv/data-set": "^0.10.0",
