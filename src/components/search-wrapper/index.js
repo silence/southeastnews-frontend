@@ -34,7 +34,7 @@ const Option = Select.Option
 //const websitesFromServer = ['metrotv', 'sindonews', 'liputan6', 'ripublika']
 const lanOptionsFromServer = [
     { label: '印度尼西亚语', value: 'Indonesia' },
-    { label: '越南语', value: 'Vietnam' },
+    { label: '越南语', value: 'Vietnam', disabled: true },
     { label: '马来西亚语', value: 'Malaysia', disabled: true }
 ]
 
@@ -54,11 +54,19 @@ const device = window.matchMedia('(max-width: 700px)').matches // true: mobile ,
 // ]
 
 class SearchWrapper extends Component {
-    state = {
-        expand: false,
-        activeTabKey: 'tab1',
-        // websites: ['metrotv', 'sindonews', 'liputan6', 'ripublika']
-        activeLan: 'Indonesia'
+    constructor(props) {
+        super(props)
+        this.state = {
+            expand: false,
+            activeTabKey: 'tab1',
+            // websites: ['metrotv', 'sindonews', 'liputan6', 'ripublika']
+            activeLan: 'Indonesia'
+        }
+        this.inputRef = React.createRef() //to handle the input focus
+    }
+
+    componentDidMount() {
+        this.inputRef.input.input.focus = () => {} // f**k the origin focus behavior because of https://github.com/ant-design/ant-design/blob/master/components/input/Search.tsx#L27
     }
 
     handleToggle = () => {
@@ -82,7 +90,7 @@ class SearchWrapper extends Component {
     handleTabChange = key => {
         console.log(key)
         this.setState({ activeTabKey: key })
-        if (key == 'tab2') {
+        if (key === 'tab2') {
             this.props.form.validateFields((err, values) => {
                 if (!err) {
                     console.log(
@@ -221,6 +229,7 @@ class SearchWrapper extends Component {
                     },
                     pageSize: 10
                 }}
+                loading={this.props.fetchResultsLoading}
                 // dataSource={listData}
                 dataSource={this.props.resultsList}
                 renderItem={item => (
@@ -228,7 +237,9 @@ class SearchWrapper extends Component {
                         key={item.news_title}
                         actions={[
                             <span>关键字统计</span>,
-                            <span>在线阅读</span>
+                            <a href={item.url} target="_blank" rel="noopener noreferrer">
+                                <span>在线阅读</span>
+                            </a>
                             // <span>test3</span>
                         ]}
                     >
@@ -345,7 +356,13 @@ class SearchWrapper extends Component {
                                                 placeholder="关键字、作者、新闻标题"
                                                 enterButton="搜索"
                                                 size="large"
-                                                onSearch={() => this.handleSubmit()}
+                                                onSearch={e => {
+                                                    console.log(e)
+                                                    this.handleSubmit()
+                                                    // this.inputRef.blur() // see https://github.com/ant-design/ant-design/blob/master/components/input/Search.tsx#L34
+                                                    console.log(this.inputRef)
+                                                }}
+                                                ref={ref => (this.inputRef = ref)}
                                             />
                                         )}
                                     </FormItem>

@@ -1,5 +1,5 @@
 const defaultState = {
-    fetchResultsLoading: 0,
+    fetchResultsLoading: false,
     resultsList: [],
     languages: null,
     countResult: [],
@@ -13,13 +13,13 @@ export default (state = defaultState, action = {}) => {
         case 'FETCH_SEARCH_RESULTS_PENDING': {
             return {
                 ...state,
-                fetchResultsLoading: 1
+                fetchResultsLoading: true
             }
         }
         case 'FETCH_SEARCH_RESULTS_FULFILLED': {
             return {
                 ...state,
-                fetchResultsLoading: 0,
+                fetchResultsLoading: false,
                 resultsList: action.payload.data
             }
         }
