@@ -139,8 +139,8 @@ class SearchWrapper extends Component {
                             : ['1000-01-01', '3000-01-01'],
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
-                        : ['score', 'desc'],
-                    from: 0 // todo
+                        : ['score', 'desc']
+                    // from: 0 // no need
                 }
                 delete fieldValues.sortModeFirst
                 delete fieldValues.sortModeSecond
