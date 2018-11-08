@@ -1,21 +1,8 @@
 import React from 'react'
-import {
-    G2,
-    Chart,
-    Geom,
-    Axis,
-    Tooltip,
-    Coord,
-    Label,
-    Legend,
-    View,
-    Guide,
-    Shape,
-    Facet,
-    Util,
-    track
-} from 'bizcharts'
+import { Chart, Geom, Axis, Tooltip, Coord, Label, track } from 'bizcharts'
+import { Icon } from 'antd'
 import DataSet from '@antv/data-set'
+import styles from './Pie.module.scss'
 
 track(false) //disable send user record
 
@@ -31,6 +18,7 @@ class LabelLine extends React.Component {
 
     render() {
         const { DataView } = DataSet
+        // const { Text, Html } = Guide
         // const data = [
         //     {
         //         item: '事例一',
@@ -70,29 +58,49 @@ class LabelLine extends React.Component {
             }
         }
         return (
-            <div>
+            <>
                 <Chart
-                    height={window.innerHeight / 2}
+                    height={(window.innerHeight / 100) * 40}
                     data={dv}
                     scale={cols}
-                    padding={[80, 100, 80, 80]}
+                    padding={['20%', '20%']}
                     forceFit={true}
                     onGetG2Instance={chartIns => {
                         this.setState({ chartIns: chartIns })
                     }}
-                    className="chartTest"
+                    className={styles.chartWrapper}
                 >
                     <Coord type="theta" radius={0.75} />
                     <Axis name="percent" />
-                    <Legend
-                        position="right"
-                        offsetY={-window.innerHeight / 2 + 120}
-                        offsetX={-100}
-                    />
+                    {/* <Legend position="right" /> */}
                     <Tooltip
                         showTitle={false}
                         itemTpl="<li><span style=&quot;background-color:{color};&quot; class=&quot;g2-tooltip-marker&quot;></span>{name}: {value}</li>"
                     />
+                    {/* <Guide>
+                        <Text
+                            content="test"
+                            top={true}
+                            style={{
+                                fill: '#fff', // 文本颜色
+                                fontSize: '12', // 文本大小
+                                fontWeight: 'bold', // 文本粗细
+                                rotate: 30 // 旋转角度
+                            }}
+                        />
+                        <Html position={['120%', '100%']} html="<p>网站统计</p>" />
+                        
+                    </Guide> */}
+                    <div className={styles['guide-title']}>
+                        <p>{this.props.guideTitle}</p>
+                        {/* <button onClick={this.handleDownloadImage}>下载图片</button> */}
+                        {/* eslint-disable-next-line */}
+                        <a onClick={this.handleDownloadImage}>
+                            <Icon type="cloud-download" theme="outlined" />
+                            下载图片
+                        </a>
+                    </div>
+
                     <Geom
                         type="intervalStack"
                         position="percent"
@@ -100,7 +108,7 @@ class LabelLine extends React.Component {
                         tooltip={[
                             'item*percent',
                             (item, percent) => {
-                                percent = percent.toFixed(4) * 100 + '%'
+                                percent = (percent * 100).toString().slice(0, 5) + '%'
                                 return {
                                     name: item,
                                     value: percent
@@ -115,13 +123,17 @@ class LabelLine extends React.Component {
                         <Label
                             content="percent"
                             formatter={(val, item) => {
-                                return item.point.item + ': ' + val
+                                console.log(val)
+                                console.log(item)
+                                return item.point.item.includes('_')
+                                    ? item.point.item.split('_')[1]
+                                    : item.point.item + ': ' + val
                             }}
+                            offset={10}
                         />
                     </Geom>
                 </Chart>
-                <button onClick={this.handleDownloadImage}>下载图片</button>
-            </div>
+            </>
         )
     }
 }

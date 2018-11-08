@@ -1,0 +1,22 @@
+.chartWrapper {
+    position: relative;
+    .guide-title {
+        position: absolute;
+        z-index: 999;
+        bottom: 10%;
+        width: 100%;
+        text-align: center;
+        p {
+            display: inline-block;
+            margin: 0;
+            font-weight: bold;
+            font-size: large;
+        }
+        a {
+            position: absolute;
+            right: 20%;
+            height: 27px;
+            line-height: 27px;
+        }
+    }
+}

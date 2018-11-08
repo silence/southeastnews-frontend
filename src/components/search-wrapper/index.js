@@ -90,38 +90,6 @@ class SearchWrapper extends Component {
     handleTabChange = key => {
         console.log(key)
         this.setState({ activeTabKey: key })
-        if (key === 'tab2') {
-            this.props.form.validateFields((err, values) => {
-                if (!err) {
-                    console.log(
-                        this.props.form.getFieldsValue(['dateRange', 'language', 'index', 'query'])
-                    )
-                    const fieldValues = {
-                        ...this.props.form.getFieldsValue([
-                            'dataRange',
-                            'language',
-                            'index',
-                            'query'
-                        ]),
-                        dateRange: device
-                            ? values['rangeMin'] && values['rangeMax']
-                                ? [values['rangeMin'], values['rangeMax']]
-                                : ['1000-01-01', '3000-01-01']
-                            : values['dateRange']
-                                ? [
-                                      values['dateRange'][0].format('YYYY-MM-DD'),
-                                      values['dateRange'][1].format('YYYY-MM-DD')
-                                  ]
-                                : ['1000-01-01', '3000-01-01']
-                    }
-                    this.props.chartApi(fieldValues)
-
-                    // this.props.chartApi(
-                    //     this.props.form.getFieldsValue(['dateRange', 'language', 'index', 'query'])
-                    // )
-                }
-            })
-        }
     }
 
     handleLanguageSelect = e => {
@@ -156,6 +124,25 @@ class SearchWrapper extends Component {
                 delete fieldValues.rangeMin
                 console.log(fieldValues)
                 this.props.fetchSearchResults(fieldValues)
+
+                const chartFieldValues = {
+                    ...this.props.form.getFieldsValue(['dataRange', 'language', 'index', 'query']),
+                    dateRange: device
+                        ? values['rangeMin'] && values['rangeMax']
+                            ? [values['rangeMin'], values['rangeMax']]
+                            : ['1000-01-01', '3000-01-01']
+                        : values['dateRange']
+                            ? [
+                                  values['dateRange'][0].format('YYYY-MM-DD'),
+                                  values['dateRange'][1].format('YYYY-MM-DD')
+                              ]
+                            : ['1000-01-01', '3000-01-01']
+                }
+                this.props.chartApi(chartFieldValues)
+
+                // this.props.chartApi(
+                //     this.props.form.getFieldsValue(['dateRange', 'language', 'index', 'query'])
+                // )
             }
         })
     }
@@ -446,7 +433,10 @@ class SearchWrapper extends Component {
                                         <Spin />
                                     ) : (
                                         <>
-                                            <Pie data={this.props.countResult} />
+                                            <Pie
+                                                data={this.props.countResult}
+                                                guideTitle="各新闻网站报道数量比例"
+                                            />
                                             <GeneratePies timeResult={this.props.timeResult} />
                                         </>
                                     )}
@@ -464,7 +454,9 @@ class SearchWrapper extends Component {
 function GeneratePies({ timeResult }) {
     const timePie = []
     for (let [key, value] of Object.entries(timeResult)) {
-        timePie.push(<Pie data={value} key={key} />)
+        timePie.push(
+            <Pie data={value} key={key} guideTitle={`${key.split('_')[1]}不同时间段报道比例`} />
+        )
     }
     return <div>{timePie}</div>
 }
