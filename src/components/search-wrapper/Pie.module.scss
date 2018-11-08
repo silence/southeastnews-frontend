@@ -12,11 +12,17 @@
             font-weight: bold;
             font-size: large;
         }
-        a {
-            position: absolute;
-            right: 20%;
-            height: 27px;
-            line-height: 27px;
-        }
+    }
+}
+
+.download {
+    position: absolute;
+    right: 20%;
+    height: 27px;
+    line-height: 27px;
+}
+@media (max-width: 700px) {
+    .download {
+        top: 27px;
     }
 }

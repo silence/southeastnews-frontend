@@ -22,6 +22,10 @@ class App extends Component {
     // }
 
     render() {
+        if (process.env.NODE_ENV !== 'development') {
+            console.log = () => {}
+        }
+
         console.log(this.props)
         const path = this.props.location.pathname
 

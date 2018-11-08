@@ -95,7 +95,7 @@ class LabelLine extends React.Component {
                         <p>{this.props.guideTitle}</p>
                         {/* <button onClick={this.handleDownloadImage}>下载图片</button> */}
                         {/* eslint-disable-next-line */}
-                        <a onClick={this.handleDownloadImage}>
+                        <a className={styles.download} onClick={this.handleDownloadImage}>
                             <Icon type="cloud-download" theme="outlined" />
                             下载图片
                         </a>
