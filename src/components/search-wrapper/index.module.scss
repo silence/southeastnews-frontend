@@ -73,3 +73,9 @@
         width: 85% !important;
     }
 }
+
+:global(.ant-list-item-content) {
+    em {
+        color: red;
+    }
+}

@@ -1,7 +1,7 @@
-/*
-ugly code (:
-need to refactor
-*/
+/**
+ * ugly code (:
+ * need to refactor
+ */
 
 import React, { Component } from 'react'
 import {
@@ -108,11 +108,11 @@ class SearchWrapper extends Component {
                             ? [values['rangeMin'], values['rangeMax']]
                             : ['1000-01-01', '3000-01-01']
                         : values['dateRange']
-                            ? [
-                                  values['dateRange'][0].format('YYYY-MM-DD'),
-                                  values['dateRange'][1].format('YYYY-MM-DD')
-                              ]
-                            : ['1000-01-01', '3000-01-01'],
+                        ? [
+                              values['dateRange'][0].format('YYYY-MM-DD'),
+                              values['dateRange'][1].format('YYYY-MM-DD')
+                          ]
+                        : ['1000-01-01', '3000-01-01'],
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
                         : ['score', 'desc']
@@ -132,11 +132,11 @@ class SearchWrapper extends Component {
                             ? [values['rangeMin'], values['rangeMax']]
                             : ['1000-01-01', '3000-01-01']
                         : values['dateRange']
-                            ? [
-                                  values['dateRange'][0].format('YYYY-MM-DD'),
-                                  values['dateRange'][1].format('YYYY-MM-DD')
-                              ]
-                            : ['1000-01-01', '3000-01-01']
+                        ? [
+                              values['dateRange'][0].format('YYYY-MM-DD'),
+                              values['dateRange'][1].format('YYYY-MM-DD')
+                          ]
+                        : ['1000-01-01', '3000-01-01']
                 }
                 this.props.chartApi(chartFieldValues)
 
@@ -243,7 +243,17 @@ class SearchWrapper extends Component {
                                 </span>
                             }
                         />
-                        {`摘要：${item.abstract}`}
+                        <>
+                            {`摘要：${item.abstract}`}
+                            <div>
+                                <h1>test</h1>
+                                <div
+                                    dangerouslySetInnerHTML={{
+                                        __html: item.highlight.news_content
+                                    }}
+                                />
+                            </div>
+                        </>
                     </List.Item>
                 )}
             />
