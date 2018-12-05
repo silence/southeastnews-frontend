@@ -381,7 +381,7 @@ class SearchWrapper extends Component {
                                                 { required: true, message: '请选择至少一个网站' }
                                             ]
                                         })(
-                                            <TagSelect>
+                                            <TagSelect expandable className="tag-select">
                                                 {this.props.getIndexLoading ? (
                                                     <Spin />
                                                 ) : (
