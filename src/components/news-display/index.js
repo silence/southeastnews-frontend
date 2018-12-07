@@ -66,7 +66,7 @@ class NewsDisplay extends Component {
             return (
                 <div className={styles.wrapper}>
                     <div className={styles.header}>
-                        <a onClick={() => this.props.history.goBack()}>
+                        <a onClick={() => this.props.history.goBack()} href>
                             <Icon
                                 type="left"
                                 style={{ fontSize: 20, paddingLeft: 14, color: '#222222' }}
