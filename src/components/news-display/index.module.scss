@@ -1,0 +1,74 @@
+@mixin inline {
+    display: inline-block;
+    color: #909aa4;
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+}
+
+.wrapper {
+    background-color: #fff;
+    max-width: 700px;
+    margin: auto;
+    em {
+        color: red;
+    }
+    p {
+        margin: 0;
+    }
+    .header {
+        height: 44px;
+        line-height: 44px;
+        width: 100%;
+        border-bottom: #f1f1f1 solid 1px;
+    }
+    .title {
+        font-size: 20px;
+        padding: 15px 12px 16px 12px;
+        font-family: PingFangSC-Semibold;
+        color: #222222;
+        line-height: 28px;
+        font-weight: 400;
+    }
+    .site {
+        @include inline;
+        margin-left: 12px;
+    }
+    .author {
+        @include inline;
+        margin-left: 10px;
+    }
+    .public-date {
+        @include inline;
+        margin-left: 10px;
+    }
+    .abstract {
+        padding: 12px;
+        font-size: 14px;
+        font-style: italic;
+    }
+    .news-content {
+        font-size: 17px;
+        padding: 0 12px;
+        line-height: 1.6875rem;
+        //overflow-wrap: break-word;
+        text-align: justify;
+        //word-break: break-all;
+        color: rgb(34, 34, 34);
+        //letter-spacing: 0.3px;
+    }
+    .footer {
+        height: 32px;
+        line-height: 32px;
+        margin-top: 8px;
+        span {
+            padding-left: 20px;
+            color: grey;
+        }
+        :global(.ant-btn) {
+            span {
+                padding: 0;
+            }
+        }
+    }
+}

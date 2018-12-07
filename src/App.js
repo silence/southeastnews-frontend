@@ -7,6 +7,7 @@ import { Spin } from 'antd'
 import LoginWrapperPage from './pages/login-wrapper-page'
 import SearchWrapperPage from './pages/search-wrapper-page'
 import AdminWrapperPage from './pages/admin-wrapper-page'
+import NewsDisplayPage from './pages/news-display-page'
 
 class App extends Component {
     componentDidMount() {
@@ -42,15 +43,16 @@ class App extends Component {
             return (
                 <>
                     {this.props.isLogin
-                        ? path === '/admin' || path === '/search'
+                        ? path === '/admin' || /^\/search(\/\d+)?$/.test(path)
                             ? null
                             : this.props.history.push('/search')
                         : path === '/login'
-                            ? null
-                            : this.props.history.push('/login')}
+                        ? null
+                        : this.props.history.push('/login')}
                     <Route path="/login" component={LoginWrapperPage} />
-                    <Route path="/search" component={SearchWrapperPage} />
+                    <Route exact path="/search" component={SearchWrapperPage} />
                     <Route path="/admin" component={AdminWrapperPage} />
+                    <Route path="/search/:id" component={NewsDisplayPage} />
                 </>
             )
         }

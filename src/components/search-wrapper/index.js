@@ -23,6 +23,7 @@ import styles from './index.module.scss'
 import TagSelect from './TagSelect'
 import FlipMove from 'react-flip-move'
 import Pie from './Pie'
+import { Link } from 'react-router-dom'
 
 const RadioGroup = Radio.Group
 // const CheckboxGroup = Checkbox.Group
@@ -223,19 +224,19 @@ class SearchWrapper extends Component {
                     <List.Item
                         key={item.news_title}
                         actions={[
-                            <span>关键字统计</span>,
+                            <Link to={`/search/${item.newsid}`}>在线阅读</Link>,
                             <a href={item.url} target="_blank" rel="noopener noreferrer">
-                                <span>在线阅读</span>
+                                <span>源网站阅读</span>
                             </a>
                             // <span>test3</span>
                         ]}
                     >
                         <List.Item.Meta
-                            title={item.news_title}
+                            title={<Link to={`/search/${item.newsid}`}>{item.news_title}</Link>}
                             description={
                                 <span>
                                     作者：
-                                    <Tag color="blue">{item.author}</Tag>
+                                    <Tag color="blue">{item.author ? item.author : '未知'}</Tag>
                                     网站：
                                     <Tag color="green">{item.site}</Tag>
                                     发表时间：
@@ -243,17 +244,7 @@ class SearchWrapper extends Component {
                                 </span>
                             }
                         />
-                        <>
-                            {`摘要：${item.abstract}`}
-                            <div>
-                                <h1>test</h1>
-                                <div
-                                    dangerouslySetInnerHTML={{
-                                        __html: item.highlight.news_content
-                                    }}
-                                />
-                            </div>
-                        </>
+                        {`摘要：${item.abstract}`}
                     </List.Item>
                 )}
             />
@@ -378,7 +369,10 @@ class SearchWrapper extends Component {
                                             //     'ripublika'
                                             // ],
                                             rules: [
-                                                { required: true, message: '请选择至少一个网站' }
+                                                {
+                                                    required: true,
+                                                    message: '请选择至少一个网站'
+                                                }
                                             ]
                                         })(
                                             <TagSelect expandable className="tag-select">
