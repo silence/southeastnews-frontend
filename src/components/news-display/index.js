@@ -99,7 +99,7 @@ class NewsDisplay extends Component {
                     </div>
                     <div className={styles.footer}>
                         <span>
-                            在这篇文章中您搜索的关键字共出现
+                            在本文中关键字共出现
                             <span style={{ color: 'red', padding: 0 }}>{count}</span>次
                         </span>
                         <Button

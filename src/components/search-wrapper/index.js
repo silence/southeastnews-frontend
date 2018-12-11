@@ -24,6 +24,7 @@ import TagSelect from './TagSelect'
 import FlipMove from 'react-flip-move'
 import Pie from './Pie'
 import { Link } from 'react-router-dom'
+import SoutheastAsiaMatch from './Southeast-Asia-Match'
 
 const RadioGroup = Radio.Group
 // const CheckboxGroup = Checkbox.Group
@@ -33,11 +34,11 @@ const { Header, Content, Footer } = Layout
 const Search = Input.Search
 const Option = Select.Option
 //const websitesFromServer = ['metrotv', 'sindonews', 'liputan6', 'ripublika']
-const lanOptionsFromServer = [
-    { label: '印度尼西亚语', value: 'Indonesia' },
-    { label: '越南语', value: 'Vietnam', disabled: true },
-    { label: '马来西亚语', value: 'Malaysia', disabled: true }
-]
+// const lanOptionsFromServer = [
+//     { label: '印度尼西亚语', value: 'Indonesia' },
+//     { label: '越南语', value: 'Vietnam', disabled: true },
+//     { label: '马来西亚语', value: 'Malaysia', disabled: true }
+// ]
 
 const device = window.matchMedia('(max-width: 700px)').matches // true: mobile , false: PC
 
@@ -405,10 +406,16 @@ class SearchWrapper extends Component {
                                             {getFieldDecorator('language', {
                                                 initialValue: 'Indonesia'
                                             })(
-                                                <RadioGroup
-                                                    options={lanOptionsFromServer}
-                                                    onChange={e => this.handleLanguageSelect(e)}
-                                                />
+                                                this.props.getIndexLoading ? (
+                                                    <Spin />
+                                                ) : (
+                                                    <RadioGroup
+                                                        options={SoutheastAsiaMatch(
+                                                            this.props.languages
+                                                        )}
+                                                        onChange={e => this.handleLanguageSelect(e)}
+                                                    />
+                                                )
                                             )}
                                         </FormItem>
                                         {/* eslint-disable-next-line*/}
