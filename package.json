@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "rm -rf build && GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve": "react-scripts build && serve -s build"
@@ -35,8 +35,7 @@
       ],
       "indent": "off",
       "jsx-a11y/href-no-hash": "off",
-      "jsx-a11y/anchor-is-valid": "off",
-      "array-callback-return": "off"
+      "jsx-a11y/anchor-is-valid": "off"
     }
   },
   "browserslist": [

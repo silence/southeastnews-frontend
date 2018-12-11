@@ -18,11 +18,13 @@ export default function SoutheastAsiaMatch(languages) {
     const map = new Map()
     SouthEastAsia.map((value, index) => {
         map.set(value.value, index)
+        return null
     })
     Object.keys(languages).map(value => {
         if (map.has(value)) {
             results.push(SouthEastAsia[map.get(value)])
         }
+        return null
     })
     return results
 }
