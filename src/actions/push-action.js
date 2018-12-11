@@ -6,7 +6,7 @@ export function pushNews(data) {
             type: 'PUSH_NEWS',
             payload: axios({
                 method: 'post',
-                url: '/receive_data/post_data',
+                url: '/receive_data/post_data/',
                 data: data,
                 config: { headers: { 'Content-Type': 'multipart/form-data' } }
             })
