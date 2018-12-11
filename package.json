@@ -35,7 +35,8 @@
       ],
       "indent": "off",
       "jsx-a11y/href-no-hash": "off",
-      "jsx-a11y/anchor-is-valid": "off"
+      "jsx-a11y/anchor-is-valid": "off",
+      "array-callback-return": "off"
     }
   },
   "browserslist": [
