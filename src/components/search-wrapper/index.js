@@ -117,8 +117,9 @@ class SearchWrapper extends Component {
                         : ['1000-01-01', '3000-01-01'],
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
-                        : ['score', 'desc']
+                        : ['score', 'desc'],
                     // from: 0 // no need
+                    language: values['language'].toLowerCase()
                 }
                 delete fieldValues.sortModeFirst
                 delete fieldValues.sortModeSecond
@@ -138,7 +139,8 @@ class SearchWrapper extends Component {
                               values['dateRange'][0].format('YYYY-MM-DD'),
                               values['dateRange'][1].format('YYYY-MM-DD')
                           ]
-                        : ['1000-01-01', '3000-01-01']
+                        : ['1000-01-01', '3000-01-01'],
+                    language: values['language'].toLowerCase()
                 }
                 this.props.chartApi(chartFieldValues)
 
