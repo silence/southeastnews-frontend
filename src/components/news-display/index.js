@@ -16,7 +16,7 @@ class NewsDisplay extends Component {
             CLIENT_ID: 'pusher',
             CLIENT_SECRET:
                 'pbkdf2_sha256$100000$Th8l8buAjpZc$6DI7O4Fp0UApZUBczCUvpHdEx8Whocb/041Exdn4j0Y=',
-            status: 2, // for test
+            status: 1, // 1: for production, 2: for test
             news_categories: 0,
             news_title: news.news_title,
             website: news.site,
