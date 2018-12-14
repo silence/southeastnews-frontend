@@ -1,13 +1,18 @@
-import React, { Component } from 'react'
+import React, { Component, Suspense, lazy } from 'react'
 import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getUserInfo } from './actions/login-action'
 import { withRouter } from 'react-router-dom'
 import { Spin } from 'antd'
-import LoginWrapperPage from './pages/login-wrapper-page'
-import SearchWrapperPage from './pages/search-wrapper-page'
-import AdminWrapperPage from './pages/admin-wrapper-page'
-import NewsDisplayPage from './pages/news-display-page'
+// import LoginWrapperPage from './pages/login-wrapper-page'
+// import SearchWrapperPage from './pages/search-wrapper-page'
+// import AdminWrapperPage from './pages/admin-wrapper-page'
+// import NewsDisplayPage from './pages/news-display-page'
+
+const LoginWrapperPage = lazy(() => import('./pages/login-wrapper-page'))
+const SearchWrapperPage = lazy(() => import('./pages/search-wrapper-page'))
+const AdminWrapperPage = lazy(() => import('./pages/admin-wrapper-page'))
+const NewsDisplayPage = lazy(() => import('./pages/news-display-page'))
 
 class App extends Component {
     componentDidMount() {
@@ -31,14 +36,7 @@ class App extends Component {
         const path = this.props.location.pathname
 
         if (this.props.getUserInfoLoading) {
-            return (
-                <div className="spin-wrapper">
-                    <Spin
-                        size="large"
-                        style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}
-                    />
-                </div>
-            )
+            return <Loading />
         } else {
             return (
                 <>
@@ -49,14 +47,27 @@ class App extends Component {
                         : path === '/login'
                         ? null
                         : this.props.history.push('/login')}
-                    <Route path="/login" component={LoginWrapperPage} />
-                    <Route exact path="/search" component={SearchWrapperPage} />
-                    <Route path="/admin" component={AdminWrapperPage} />
-                    <Route path="/search/:id" component={NewsDisplayPage} />
+                    <Suspense fallback={<Loading />}>
+                        <Route path="/login" component={LoginWrapperPage} />
+                        <Route exact path="/search" component={SearchWrapperPage} />
+                        <Route path="/admin" component={AdminWrapperPage} />
+                        <Route path="/search/:id" component={NewsDisplayPage} />
+                    </Suspense>
                 </>
             )
         }
     }
+}
+
+function Loading() {
+    return (
+        <div className="spin-wrapper">
+            <Spin
+                size="large"
+                style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}
+            />
+        </div>
+    )
 }
 
 function mapStateToProps(state) {
