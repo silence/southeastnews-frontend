@@ -5,17 +5,17 @@
   "homepage": ".",
   "proxy": "http://localhost:8080",
   "dependencies": {
-    "@antv/data-set": "^0.10.0",
-    "antd": "^3.10.0",
+    "@antv/data-set": "^0.10.1",
+    "antd": "^3.11.2",
     "axios": "^0.18.0",
-    "bizcharts": "^3.2.4",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
+    "bizcharts": "^3.4.1",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
     "react-flip-move": "^3.0.3",
-    "react-redux": "^5.0.7",
+    "react-redux": "^5.1.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.0.4",
-    "redux": "^4.0.0",
+    "react-scripts": "2.1.1",
+    "redux": "^4.0.1",
     "redux-promise-middleware": "^5.1.1",
     "redux-thunk": "^2.3.0"
   },
@@ -45,8 +45,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "ajv": "^6.5.4",
-    "node-sass": "^4.9.3",
-    "redux-devtools-extension": "^2.13.5"
+    "ajv": "^6.6.1",
+    "node-sass": "^4.11.0",
+    "redux-devtools-extension": "^2.13.7"
   }
 }
