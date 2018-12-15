@@ -58,26 +58,25 @@ class LabelLine extends React.Component {
             }
         }
         return (
-            <>
-                <Chart
-                    height={(window.innerHeight / 100) * 40}
-                    data={dv}
-                    scale={cols}
-                    padding={['20%', '20%']}
-                    forceFit={true}
-                    onGetG2Instance={chartIns => {
-                        this.setState({ chartIns: chartIns })
-                    }}
-                    className={styles.chartWrapper}
-                >
-                    <Coord type="theta" radius={0.75} />
-                    <Axis name="percent" />
-                    {/* <Legend position="right" /> */}
-                    <Tooltip
-                        showTitle={false}
-                        itemTpl="<li><span style=&quot;background-color:{color};&quot; class=&quot;g2-tooltip-marker&quot;></span>{name}: {value}</li>"
-                    />
-                    {/* <Guide>
+            <Chart
+                height={(window.innerHeight / 100) * 40}
+                data={dv}
+                scale={cols}
+                padding={['20%', '20%']}
+                forceFit={true}
+                onGetG2Instance={chartIns => {
+                    this.setState({ chartIns: chartIns })
+                }}
+                className={styles.chartWrapper}
+            >
+                <Coord type="theta" radius={0.75} />
+                <Axis name="percent" />
+                {/* <Legend position="right" /> */}
+                <Tooltip
+                    showTitle={false}
+                    itemTpl='<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>'
+                />
+                {/* <Guide>
                         <Text
                             content="test"
                             top={true}
@@ -91,49 +90,48 @@ class LabelLine extends React.Component {
                         <Html position={['120%', '100%']} html="<p>网站统计</p>" />
                         
                     </Guide> */}
-                    <div className={styles['guide-title']}>
-                        <p>{this.props.guideTitle}</p>
-                        {/* <button onClick={this.handleDownloadImage}>下载图片</button> */}
-                        {/* eslint-disable-next-line */}
-                        <a className={styles.download} onClick={this.handleDownloadImage}>
-                            <Icon type="cloud-download" theme="outlined" />
-                            下载图片
-                        </a>
-                    </div>
+                <div className={styles['guide-title']}>
+                    <p>{this.props.guideTitle}</p>
+                    {/* <button onClick={this.handleDownloadImage}>下载图片</button> */}
+                    {/* eslint-disable-next-line */}
+                    <a className={styles.download} onClick={this.handleDownloadImage}>
+                        <Icon type="cloud-download" theme="outlined" />
+                        下载图片
+                    </a>
+                </div>
 
-                    <Geom
-                        type="intervalStack"
-                        position="percent"
-                        color="item"
-                        tooltip={[
-                            'item*percent',
-                            (item, percent) => {
-                                percent = (percent * 100).toString().slice(0, 5) + '%'
-                                return {
-                                    name: item,
-                                    value: percent
-                                }
+                <Geom
+                    type="intervalStack"
+                    position="percent"
+                    color="item"
+                    tooltip={[
+                        'item*percent',
+                        (item, percent) => {
+                            percent = (percent * 100).toString().slice(0, 5) + '%'
+                            return {
+                                name: item,
+                                value: percent
                             }
-                        ]}
-                        style={{
-                            lineWidth: 1,
-                            stroke: '#fff'
+                        }
+                    ]}
+                    style={{
+                        lineWidth: 1,
+                        stroke: '#fff'
+                    }}
+                >
+                    <Label
+                        content="percent"
+                        formatter={(val, item) => {
+                            console.log(val)
+                            console.log(item)
+                            return item.point.item.includes('_')
+                                ? `${item.point.item.split('_')[1]}: ${item.point.count}条: ${val}`
+                                : `${item.point.item}: ${item.point.count}条: ${val}`
                         }}
-                    >
-                        <Label
-                            content="percent"
-                            formatter={(val, item) => {
-                                console.log(val)
-                                console.log(item)
-                                return item.point.item.includes('_')
-                                    ? item.point.item.split('_')[1]
-                                    : item.point.item + ': ' + val
-                            }}
-                            offset={10}
-                        />
-                    </Geom>
-                </Chart>
-            </>
+                        offset={15}
+                    />
+                </Geom>
+            </Chart>
         )
     }
 }

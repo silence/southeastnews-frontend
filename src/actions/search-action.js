@@ -27,3 +27,12 @@ export function chartApi(data) {
         })
     }
 }
+
+export function setCurrentPage(page) {
+    return dispatch => {
+        return dispatch({
+            type: 'SET_CURRENT_PAGE',
+            payload: page
+        })
+    }
+}

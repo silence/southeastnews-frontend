@@ -117,7 +117,7 @@ class SearchWrapper extends Component {
                         : ['1000-01-01', '3000-01-01'],
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
-                        : ['score', 'desc'],
+                        : ['time', 'desc'],
                     // from: 0 // no need
                     language: values['language'].toLowerCase()
                 }
@@ -159,7 +159,7 @@ class SearchWrapper extends Component {
         ) : null
         const { getFieldDecorator } = this.props.form
         const formLayout = {
-            labelCol: { span: 2 },
+            labelCol: { span: 3 },
             wrapperCol: { span: 14, offset: 1 }
         }
         const tabList = [
@@ -188,7 +188,7 @@ class SearchWrapper extends Component {
                 <Divider dashed />
                 <FormItem label="排序模式1" {...formLayout}>
                     {getFieldDecorator('sortModeFirst', {
-                        initialValue: 'score'
+                        initialValue: 'time'
                     })(
                         <Select style={{ width: '30%' }}>
                             <Option value="score">按关联度排序</Option>
@@ -207,6 +207,19 @@ class SearchWrapper extends Component {
                         </Select>
                     )}
                 </FormItem>
+                <Divider dashed />
+                <FormItem label="统计时间段划分" {...formLayout}>
+                    {getFieldDecorator('timeDivide', {
+                        initialValue: 'year'
+                    })(
+                        <Select style={{ width: '30%' }}>
+                            <Option value="year">年</Option>
+                            <Option value="halfYear">半年</Option>
+                            <Option value="quarter">季度</Option>
+                            <Option value="month">月</Option>
+                        </Select>
+                    )}
+                </FormItem>
             </div>
         ) : null
 
@@ -217,7 +230,9 @@ class SearchWrapper extends Component {
                 pagination={{
                     onChange: page => {
                         console.log(page)
+                        this.props.setCurrentPage(page)
                     },
+                    current: this.props.currentPage,
                     pageSize: 10
                 }}
                 loading={this.props.fetchResultsLoading}
