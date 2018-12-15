@@ -5,7 +5,8 @@ const defaultState = {
     countResult: [],
     timeResult: null,
     chartLoading: 1,
-    getIndexLoading: 1
+    getIndexLoading: 1,
+    currentPage: 1
 }
 
 export default (state = defaultState, action = {}) => {
@@ -51,6 +52,12 @@ export default (state = defaultState, action = {}) => {
                 countResult: action.payload.data.count_result,
                 timeResult: action.payload.data.time_result,
                 chartLoading: 0
+            }
+        }
+        case 'SET_CURRENT_PAGE': {
+            return {
+                ...state,
+                currentPage: action.payload
             }
         }
         default:
