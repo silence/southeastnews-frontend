@@ -117,11 +117,7 @@ class SearchWrapper extends Component {
                         : ['1000-01-01', '3000-01-01'],
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
-<<<<<<< HEAD
-                        : ['score', 'desc'],
-=======
                         : ['time', 'desc'],
->>>>>>> github
                     // from: 0 // no need
                     language: values['language'].toLowerCase()
                 }
