@@ -7,12 +7,13 @@ import { Spin } from 'antd'
 // import LoginWrapperPage from './pages/login-wrapper-page'
 // import SearchWrapperPage from './pages/search-wrapper-page'
 // import AdminWrapperPage from './pages/admin-wrapper-page'
-// import NewsDisplayPage from './pages/news-display-page'
+import NewsDisplayPage from './pages/news-display-page'
 
 const LoginWrapperPage = lazy(() => import('./pages/login-wrapper-page'))
 const SearchWrapperPage = lazy(() => import('./pages/search-wrapper-page'))
 const AdminWrapperPage = lazy(() => import('./pages/admin-wrapper-page'))
-const NewsDisplayPage = lazy(() => import('./pages/news-display-page'))
+// news-display page cannot split code from route because of multilevel route
+// const NewsDisplayPage = lazy(() => import('./pages/news-display-page'))
 
 class App extends Component {
     componentDidMount() {

@@ -140,7 +140,8 @@ class SearchWrapper extends Component {
                               values['dateRange'][1].format('YYYY-MM-DD')
                           ]
                         : ['1000-01-01', '3000-01-01'],
-                    language: values['language'].toLowerCase()
+                    language: values['language'].toLowerCase(),
+                    timeDivide: this.state.expand ? values['timeDivide'] : 'year'
                 }
                 this.props.chartApi(chartFieldValues)
 
