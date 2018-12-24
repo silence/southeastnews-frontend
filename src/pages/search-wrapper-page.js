@@ -3,7 +3,13 @@ import { connect } from 'react-redux'
 import SearchWrapper from '../components/search-wrapper'
 import { withRouter } from 'react-router-dom'
 import { getUserInfo, logout } from '../actions/login-action'
-import { fetchSearchResults, getIndex, chartApi, setCurrentPage } from '../actions/search-action'
+import {
+    fetchSearchResults,
+    getIndex,
+    chartApi,
+    setCurrentPage,
+    setFieldsChange
+} from '../actions/search-action'
 
 class SearchWrapperPage extends Component {
     componentDidMount() {
@@ -41,6 +47,14 @@ function mapStateToProps(state) {
 export default withRouter(
     connect(
         mapStateToProps,
-        { getUserInfo, logout, fetchSearchResults, getIndex, chartApi, setCurrentPage }
+        {
+            getUserInfo,
+            logout,
+            fetchSearchResults,
+            getIndex,
+            chartApi,
+            setCurrentPage,
+            setFieldsChange
+        }
     )(SearchWrapperPage)
 )

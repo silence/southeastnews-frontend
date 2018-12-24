@@ -36,3 +36,12 @@ export function setCurrentPage(page) {
         })
     }
 }
+
+export function setFieldsChange(allFields) {
+    return dispatch => {
+        return dispatch({
+            type: 'SET_FIELDS_CHANGE',
+            payload: allFields
+        })
+    }
+}

@@ -17,7 +17,8 @@ import {
     Tag,
     Select,
     Radio,
-    Spin
+    Spin,
+    Tooltip
 } from 'antd'
 import styles from './index.module.scss'
 import TagSelect from './TagSelect'
@@ -119,7 +120,8 @@ class SearchWrapper extends Component {
                         ? [values['sortModeFirst'], values['sortModeSecond']]
                         : ['time', 'desc'],
                     // from: 0 // no need
-                    language: values['language'].toLowerCase()
+                    language: values['language'].toLowerCase(),
+                    searchMode: this.state.expand ? values['searchMode'] : 'or'
                 }
                 delete fieldValues.sortModeFirst
                 delete fieldValues.sortModeSecond
@@ -187,7 +189,17 @@ class SearchWrapper extends Component {
         const AdvanceSearch = this.state.expand ? (
             <div className="advanced-search">
                 <Divider dashed />
-                <FormItem label="排序模式1" {...formLayout}>
+                <FormItem
+                    label={
+                        <>
+                            <span>排序模式1</span>
+                            <Tooltip title="关联度是由综合词频、逆向文档频率、字段长度归一值的算法计算得出">
+                                <Icon type="question-circle" style={{ fontSize: 12 }} />
+                            </Tooltip>
+                        </>
+                    }
+                    {...formLayout}
+                >
                     {getFieldDecorator('sortModeFirst', {
                         initialValue: 'time'
                     })(
@@ -209,15 +221,55 @@ class SearchWrapper extends Component {
                     )}
                 </FormItem>
                 <Divider dashed />
-                <FormItem label="统计时间段划分" {...formLayout}>
+                <FormItem
+                    label={
+                        <>
+                            <span>统计时间段划分</span>
+                            <Tooltip title="时间断点将前面选定的日期期间分成n+1份，然后统计各自比例">
+                                <Icon type="question-circle" style={{ fontSize: 12 }} />
+                            </Tooltip>
+                        </>
+                    }
+                    {...formLayout}
+                >
                     {getFieldDecorator('timeDivide', {
-                        initialValue: 'year'
+                        initialValue: '3'
                     })(
                         <Select style={{ width: '30%' }}>
-                            <Option value="year">年</Option>
-                            <Option value="halfYear">半年</Option>
-                            <Option value="quarter">季度</Option>
-                            <Option value="month">月</Option>
+                            <Option value="0">0</Option>
+                            <Option value="1">1</Option>
+                            <Option value="2">2</Option>
+                            <Option value="3">3</Option>
+                            <Option value="4">4</Option>
+                            <Option value="5">5</Option>
+                            <Option value="6">6</Option>
+                            <Option value="7">7</Option>
+                            <Option value="8">8</Option>
+                            <Option value="9">9</Option>
+                            <Option value="10">10</Option>
+                            <Option value="11">11</Option>
+                            <Option value="12">12</Option>
+                        </Select>
+                    )}
+                </FormItem>
+                <Divider dashed />
+                <FormItem
+                    label={
+                        <>
+                            <span>分词搜索模式</span>
+                            <Tooltip title="或表示搜索的词汇至少包含一个,且表示搜索的词汇必须全部包含">
+                                <Icon type="question-circle" style={{ fontSize: 12 }} />
+                            </Tooltip>
+                        </>
+                    }
+                    {...formLayout}
+                >
+                    {getFieldDecorator('searchMode', {
+                        initialValue: 'or'
+                    })(
+                        <Select style={{ width: '30%' }}>
+                            <Option value="or">或</Option>
+                            <Option value="and">且</Option>
                         </Select>
                     )}
                 </FormItem>
@@ -490,4 +542,17 @@ function GeneratePies({ timeResult }) {
     return <div>{timePie}</div>
 }
 
-export default Form.create({})(SearchWrapper)
+export default Form.create({
+    onFieldsChange(props, changedFields, allFields) {
+        console.log(props, changedFields, allFields)
+        props.setFieldsChange(allFields)
+    },
+    mapPropsToFields(props) {
+        return {
+            ...props.allFields
+        }
+    },
+    onValuesChange(...args) {
+        console.log(args)
+    }
+})(SearchWrapper)

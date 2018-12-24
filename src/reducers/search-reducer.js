@@ -6,7 +6,8 @@ const defaultState = {
     timeResult: null,
     chartLoading: 1,
     getIndexLoading: 1,
-    currentPage: 1
+    currentPage: 1,
+    allFields: {}
 }
 
 export default (state = defaultState, action = {}) => {
@@ -58,6 +59,12 @@ export default (state = defaultState, action = {}) => {
             return {
                 ...state,
                 currentPage: action.payload
+            }
+        }
+        case 'SET_FIELDS_CHANGE': {
+            return {
+                ...state,
+                allFields: action.payload
             }
         }
         default:
