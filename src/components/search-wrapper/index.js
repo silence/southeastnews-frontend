@@ -143,7 +143,8 @@ class SearchWrapper extends Component {
                           ]
                         : ['1000-01-01', '3000-01-01'],
                     language: values['language'].toLowerCase(),
-                    timeDivide: this.state.expand ? values['timeDivide'] : '3'
+                    timeDivide: this.state.expand ? values['timeDivide'] : '3',
+                    searchMode: this.state.expand ? values['searchMode'] : 'or'
                 }
                 this.props.chartApi(chartFieldValues)
 
