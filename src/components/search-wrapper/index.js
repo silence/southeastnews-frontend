@@ -22,6 +22,7 @@ import {
 } from 'antd'
 import styles from './index.module.scss'
 import TagSelect from './TagSelect'
+import DatePickerComponent from './DatePickerComponent'
 import FlipMove from 'react-flip-move'
 import Pie from './Pie'
 import { Link } from 'react-router-dom'
@@ -101,7 +102,7 @@ class SearchWrapper extends Component {
 
     handleSubmit = () => {
         this.props.form.validateFields((err, values) => {
-            if (!err) {
+            if (!err && values['index']) {
                 console.log('Received values of form: ', values)
                 const fieldValues = {
                     ...values,
@@ -111,11 +112,14 @@ class SearchWrapper extends Component {
                             ? [values['rangeMin'], values['rangeMax']]
                             : ['1000-01-01', '3000-01-01']
                         : values['dateRange']
-                        ? [
-                              values['dateRange'][0].format('YYYY-MM-DD'),
-                              values['dateRange'][1].format('YYYY-MM-DD')
-                          ]
+                        ? values['dateRange'].length
+                            ? [
+                                  values['dateRange'][0].format('YYYY-MM-DD'),
+                                  values['dateRange'][1].format('YYYY-MM-DD')
+                              ]
+                            : ['1000-01-01', '3000-01-01']
                         : ['1000-01-01', '3000-01-01'],
+
                     sortMode: this.state.expand
                         ? [values['sortModeFirst'], values['sortModeSecond']]
                         : ['time', 'desc'],
@@ -127,25 +131,52 @@ class SearchWrapper extends Component {
                 delete fieldValues.sortModeSecond
                 delete fieldValues.rangeMax
                 delete fieldValues.rangeMin
+                delete fieldValues.dateRangeB
                 console.log(fieldValues)
                 this.props.fetchSearchResults(fieldValues)
 
-                const chartFieldValues = {
-                    ...this.props.form.getFieldsValue(['dataRange', 'language', 'index', 'query']),
-                    dateRange: device
-                        ? values['rangeMin'] && values['rangeMax']
-                            ? [values['rangeMin'], values['rangeMax']]
-                            : ['1000-01-01', '3000-01-01']
-                        : values['dateRange']
+                const dateRangeA = device
+                    ? values['rangeMin'] && values['rangeMax']
+                        ? [values['rangeMin'], values['rangeMax']]
+                        : ['1000-01-01', '3000-01-01']
+                    : values['dateRange']
+                    ? values['dateRange'].length
                         ? [
                               values['dateRange'][0].format('YYYY-MM-DD'),
                               values['dateRange'][1].format('YYYY-MM-DD')
                           ]
-                        : ['1000-01-01', '3000-01-01'],
-                    language: values['language'].toLowerCase(),
-                    timeDivide: this.state.expand ? values['timeDivide'] : '3',
-                    searchMode: this.state.expand ? values['searchMode'] : 'or'
+                        : ['1000-01-01', '3000-01-01']
+                    : ['1000-01-01', '3000-01-01']
+
+                let chartFieldValues
+                if (values['dateRangeB'] && values['dateRangeB']) {
+                    chartFieldValues = {
+                        ...this.props.form.getFieldsValue([
+                            'dateRange',
+                            'language',
+                            'index',
+                            'query'
+                        ]),
+                        dateRange: [...dateRangeA, ...values['dateRangeB']].sort(),
+                        language: values['language'].toLowerCase(),
+                        searchMode: this.state.expand ? values['searchMode'] : 'or',
+                        type: 'time'
+                    }
+                } else {
+                    chartFieldValues = {
+                        ...this.props.form.getFieldsValue([
+                            'dateRange',
+                            'language',
+                            'index',
+                            'query'
+                        ]),
+                        dateRange: dateRangeA,
+                        language: values['language'].toLowerCase(),
+                        searchMode: this.state.expand ? values['searchMode'] : 'or',
+                        type: 'count'
+                    }
                 }
+
                 this.props.chartApi(chartFieldValues)
 
                 // this.props.chartApi(
@@ -218,38 +249,6 @@ class SearchWrapper extends Component {
                         <Select style={{ width: '30%' }}>
                             <Option value="desc">降序</Option>
                             <Option value="asc">升序</Option>
-                        </Select>
-                    )}
-                </FormItem>
-                <Divider dashed />
-                <FormItem
-                    label={
-                        <>
-                            <span>统计时间段划分</span>
-                            <Tooltip title="时间断点将前面选定的日期期间分成n+1份，然后统计各自比例">
-                                <Icon type="question-circle" style={{ fontSize: 12 }} />
-                            </Tooltip>
-                        </>
-                    }
-                    {...formLayout}
-                >
-                    {getFieldDecorator('timeDivide', {
-                        initialValue: '3'
-                    })(
-                        <Select style={{ width: '30%' }}>
-                            <Option value="0">0</Option>
-                            <Option value="1">1</Option>
-                            <Option value="2">2</Option>
-                            <Option value="3">3</Option>
-                            <Option value="4">4</Option>
-                            <Option value="5">5</Option>
-                            <Option value="6">6</Option>
-                            <Option value="7">7</Option>
-                            <Option value="8">8</Option>
-                            <Option value="9">9</Option>
-                            <Option value="10">10</Option>
-                            <Option value="11">11</Option>
-                            <Option value="12">12</Option>
                         </Select>
                     )}
                 </FormItem>
@@ -371,6 +370,19 @@ class SearchWrapper extends Component {
             </FormItem>
         )
 
+        const { dateRange } = this.props.form.getFieldsValue(['dateRange'])
+        let dateRangeFormat, start, end
+        if (dateRange && dateRange.length) {
+            dateRangeFormat = dateRange.map(val => val.format('YYYY-MM-DD'))
+            start = dateRangeFormat[0]
+            end = dateRangeFormat[1]
+        }
+        const { rangeMin, rangeMax } = this.props.form.getFieldsValue(['rangeMin', 'rangeMax'])
+        if (rangeMin && rangeMax) {
+            start = rangeMin
+            end = rangeMax
+        }
+
         return (
             <Layout className={styles.layout}>
                 <Header
@@ -435,9 +447,6 @@ class SearchWrapper extends Component {
                                     <FormItem label="网站选择" {...formLayout}>
                                         {getFieldDecorator('index', {
                                             // initialValue: [
-                                            //     'metrotv',
-                                            //     'sindonews',
-                                            //     'liputan6',
                                             //     'ripublika'
                                             // ],
                                             rules: [
@@ -471,6 +480,25 @@ class SearchWrapper extends Component {
 
                                     {device ? MobileDateRange : PCDateRange}
 
+                                    <Divider dashed />
+                                    <FormItem
+                                        label={
+                                            <>
+                                                <span>时间断点选择</span>
+                                                <Tooltip title="时间断点需要在所选的时间范围之内">
+                                                    <Icon
+                                                        type="question-circle"
+                                                        style={{ fontSize: 12 }}
+                                                    />
+                                                </Tooltip>
+                                            </>
+                                        }
+                                        {...formLayout}
+                                    >
+                                        {getFieldDecorator('dateRangeB', {})(
+                                            <DatePickerComponent start={start} end={end} />
+                                        )}
+                                    </FormItem>
                                     <Divider dashed />
                                     <div style={{ position: 'relative' }}>
                                         <FormItem label="语种选择" {...formLayout}>
@@ -519,7 +547,9 @@ class SearchWrapper extends Component {
                                                 data={this.props.countResult}
                                                 guideTitle="各新闻网站报道数量比例"
                                             />
-                                            <GeneratePies timeResult={this.props.timeResult} />
+                                            {this.props.timeResult ? (
+                                                <GeneratePies timeResult={this.props.timeResult} />
+                                            ) : null}
                                         </>
                                     )}
                                 </Card>
